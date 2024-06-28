@@ -69,7 +69,7 @@ class NLTKWordTokenizer(TokenizerI):
     # For improvements for starting/closing quotes from TreebankWordTokenizer,
     # see discussion on https://github.com/nltk/nltk/pull/1437
     # Adding to TreebankWordTokenizer, nltk.word_tokenize now splits on
-    # - chervon quotes u'\xab' and u'\xbb' .
+    # - chevron quotes u'\xab' and u'\xbb' .
     # - unicode quotes u'\u2018', u'\u2019', u'\u201c' and u'\u201d'
     # See https://github.com/nltk/nltk/issues/1995#issuecomment-376741608
     # Also, behavior of splitting on clitics now follows Stanford CoreNLP
