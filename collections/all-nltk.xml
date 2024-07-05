@@ -92,6 +92,7 @@
   <item ref="swadesh" />
   <item ref="switchboard" />
   <item ref="tagsets" />
+  <item ref="tagsets_json" />
   <item ref="timit" />
   <item ref="toolbox" />
   <item ref="treebank" />
