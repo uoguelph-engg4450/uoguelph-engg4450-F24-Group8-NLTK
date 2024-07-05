@@ -150,8 +150,7 @@ to tag to the learned data.
 The lackluster accuracy here can be explained with the following example:
 
     >>> unigram_tagger.tag(["I", "would", "like", "this", "sentence", "to", "be", "tagged"])
-    [('I', 'NNP'), ('would', 'MD'), ('like', None), ('this', 'DT'), ('sentence', None),
-    ('to', 'TO'), ('be', 'VB'), ('tagged', None)]
+    [('I', 'NNP'), ('would', 'MD'), ('like', None), ('this', 'DT'), ('sentence', None), ('to', 'TO'), ('be', 'VB'), ('tagged', None)]
 
 As you can see, many tokens are tagged as ``None``, as these tokens are OOV (out of vocabulary).
 The ``UnigramTagger`` has never seen them, and as a result they are not in its database of known terms.
@@ -429,9 +428,7 @@ templates to attempt to improve the performance of the tagger.
 
     >>> tagged, test_stats = tagger1.batch_tag_incremental(testing_data, gold_data)
     >>> tagged[33][12:]
-    [('foreign', 'NN'), ('debt', 'NN'), ('of', 'IN'), ('$', '$'), ('64', 'CD'),
-    ('billion', 'CD'), ('*U*', '-NONE-'), ('--', ':'), ('the', 'DT'), ('third-highest', 'NN'),
-    ('in', 'IN'), ('the', 'DT'), ('developing', 'VBG'), ('world', 'NN'), ('.', '.')]
+    [('foreign', 'NN'), ('debt', 'NN'), ('of', 'IN'), ('$', '$'), ('64', 'CD'), ('billion', 'CD'), ('*U*', '-NONE-'), ('--', ':'), ('the', 'DT'), ('third-highest', 'NN'), ('in', 'IN'), ('the', 'DT'), ('developing', 'VBG'), ('world', 'NN'), ('.', '.')]
 
 Regression Tests
 ~~~~~~~~~~~~~~~~
@@ -472,4 +469,4 @@ strictly defined.
 
     >>> from nltk.tag import pos_tag
     >>> pos_tag(['', 'is', 'a', 'beautiful', 'day'])
-    [...]
+    [('', 'NN'), ('is', 'VBZ'), ('a', 'DT'), ('beautiful', 'JJ'), ('day', 'NN')]
