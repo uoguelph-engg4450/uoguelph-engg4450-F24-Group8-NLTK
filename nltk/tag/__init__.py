@@ -95,8 +95,8 @@ from nltk.data import load, find
 
 
 PRETRAINED_TAGGERS = {
-  "rus": "taggers/averaged_perceptron_tagger_rus/",
-  "eng": "taggers/averaged_perceptron_tagger_eng/",
+    "rus": "taggers/averaged_perceptron_tagger_rus/",
+    "eng": "taggers/averaged_perceptron_tagger_eng/",
 }
 
 

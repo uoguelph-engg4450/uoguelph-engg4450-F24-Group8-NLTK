@@ -25,22 +25,21 @@ except ImportError:
 TRAINED_TAGGER_PATH = "averaged_perceptron_tagger/"
 
 TAGGER_JSONS = {
-    'eng': {
-        'weights': 'averaged_perceptron_tagger_eng.weights.json', 
-        'tagdict': 'averaged_perceptron_tagger_eng.tagdict.json',
-        'classes': 'averaged_perceptron_tagger_eng.classes.json'
-        },
-    'rus': {
-        'weights': 'averaged_perceptron_tagger_rus.weights.json', 
-        'tagdict': 'averaged_perceptron_tagger_rus.tagdict.json',
-        'classes': 'averaged_perceptron_tagger_rus.classes.json'
-        }, 
-    'xxx': {
-        'weights': 'averaged_perceptron_tagger.xxx.weights.json', 
-        'tagdict': 'averaged_perceptron_tagger.xxx.tagdict.json',
-        'classes': 'averaged_perceptron_tagger.xxx.classes.json'    
-    }
-
+    "eng": {
+        "weights": "averaged_perceptron_tagger_eng.weights.json",
+        "tagdict": "averaged_perceptron_tagger_eng.tagdict.json",
+        "classes": "averaged_perceptron_tagger_eng.classes.json",
+    },
+    "rus": {
+        "weights": "averaged_perceptron_tagger_rus.weights.json",
+        "tagdict": "averaged_perceptron_tagger_rus.tagdict.json",
+        "classes": "averaged_perceptron_tagger_rus.classes.json",
+    },
+    "xxx": {
+        "weights": "averaged_perceptron_tagger.xxx.weights.json",
+        "tagdict": "averaged_perceptron_tagger.xxx.tagdict.json",
+        "classes": "averaged_perceptron_tagger.xxx.classes.json",
+    },
 }
 
 
@@ -123,7 +122,7 @@ class AveragedPerceptron:
 
     def save(self, path):
         """Save the model weights as json"""
-        with open(path, 'w') as fout:
+        with open(path, "w") as fout:
             return json.dump(self.weights, fout)
 
     def load(self, path):
@@ -175,7 +174,7 @@ class PerceptronTagger(TaggerI):
     START = ["-START-", "-START2-"]
     END = ["-END-", "-END2-"]
 
-    def __init__(self, load=True, lang='eng'):
+    def __init__(self, load=True, lang="eng"):
         """
         :param load: Load the json model upon instantiation.
         """
@@ -184,7 +183,6 @@ class PerceptronTagger(TaggerI):
         self.classes = set()
         if load:
             self.load_from_json(lang)
-
 
     def tag(self, tokens, return_conf=False, use_tagdict=True):
         """
@@ -259,27 +257,27 @@ class PerceptronTagger(TaggerI):
         if save_loc is not None:
             self.save_to_json(loc)
 
-
-    def save_to_json(self, loc, lang='xxx'):
+    def save_to_json(self, loc, lang="xxx"):
         # TODO:
-        assert os.isdir(TRAINED_TAGGER_PATH), f"Path set for saving needs to be a directory"
+        assert os.isdir(
+            TRAINED_TAGGER_PATH
+        ), f"Path set for saving needs to be a directory"
 
-        with open(loc + TAGGER_JSONS[lang]['weights'], 'w') as fout:
+        with open(loc + TAGGER_JSONS[lang]["weights"], "w") as fout:
             json.dump(self.model.weights, fout)
-        with open(loc + TAGGER_JSONS[lang]['tagdict'], 'w') as fout:
+        with open(loc + TAGGER_JSONS[lang]["tagdict"], "w") as fout:
             json.dump(self.tagdict, fout)
-        with open(loc + TAGGER_JSONS[lang]['classes'], 'w') as fout:
+        with open(loc + TAGGER_JSONS[lang]["classes"], "w") as fout:
             json.dump(self.classes, fout)
 
-
-    def load_from_json(self, lang='eng'):
+    def load_from_json(self, lang="eng"):
         # Automatically find path to the tagger if location is not specified.
         loc = find(f"taggers/averaged_perceptron_tagger_{lang}/")
-        with open(loc + TAGGER_JSONS[lang]['weights']) as fin:
+        with open(loc + TAGGER_JSONS[lang]["weights"]) as fin:
             self.model.weights = json.load(fin)
-        with open(loc + TAGGER_JSONS[lang]['tagdict']) as fin:
+        with open(loc + TAGGER_JSONS[lang]["tagdict"]) as fin:
             self.tagdict = json.load(fin)
-        with open(loc + TAGGER_JSONS[lang]['classes']) as fin:
+        with open(loc + TAGGER_JSONS[lang]["classes"]) as fin:
             self.classes = set(json.load(fin))
 
         self.model.classes = self.classes
