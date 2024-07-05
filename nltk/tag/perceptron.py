@@ -8,8 +8,8 @@
 #
 # This module is provided under the terms of the MIT License.
 
-import logging
 import json
+import logging
 import random
 from collections import defaultdict
 
