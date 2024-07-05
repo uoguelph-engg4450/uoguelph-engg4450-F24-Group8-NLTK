@@ -2,7 +2,9 @@
   <item ref="abc" />
   <item ref="alpino" />
   <item ref="averaged_perceptron_tagger" />
+  <item ref="averaged_perceptron_tagger_eng" />
   <item ref="averaged_perceptron_tagger_ru" />
+  <item ref="averaged_perceptron_tagger_rus" />
   <item ref="basque_grammars" />
   <item ref="bcp47" />
   <item ref="biocreative_ppi" />
