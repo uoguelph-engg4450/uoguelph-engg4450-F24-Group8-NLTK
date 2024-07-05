@@ -15,6 +15,7 @@ from textwrap import wrap
 
 from nltk.data import find
 
+
 def brown_tagset(tagpattern=None):
     _format_tagset("brown_tagset", tagpattern)
 
