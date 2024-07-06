@@ -33,6 +33,7 @@ class TestUdhr(unittest.TestCase):
 [Preamble]
 Trzecia Sesja Ogólnego Zgromadzenia ONZ, obradująca w Paryżu, \
 uchwaliła 10 grudnia 1948 roku jednomyślnie Powszechną"""
+
         assert text_pl == expected, "Polish-Latin2"
         assert text_ppl == expected, "Polish_Polski-Latin2"
 
