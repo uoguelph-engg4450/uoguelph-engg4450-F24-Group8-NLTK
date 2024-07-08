@@ -9,7 +9,6 @@ import unittest.mock
 from nltk import pos_tag, word_tokenize
 from nltk.help import brown_tagset, claws5_tagset, upenn_tagset
 
-
 UPENN_TAGSET_DOLLAR_TEST = """$: dollar
     $ -$ --$ A$ C$ HK$ M$ NZ$ S$ U.S.$ US$
 PRP$: pronoun, possessive
@@ -24,9 +23,10 @@ BROWN_TAGSET_NNS_TEST = """NNS: noun, plural, common
     sessions members congressmen votes polls calls ...
 """
 
-CLAW5_TAGSET_VHD_TEST ="""VHD: past tense form of the verb "HAVE"
+CLAW5_TAGSET_VHD_TEST = """VHD: past tense form of the verb "HAVE"
     had, 'd
 """
+
 
 class TestPosTag(unittest.TestCase):
     def test_pos_tag_eng(self):
@@ -61,8 +61,7 @@ class TestPosTag(unittest.TestCase):
         ]
         assert pos_tag(word_tokenize(text), tagset="universal") == expected_tagged
 
-
-    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    @unittest.mock.patch("sys.stdout", new_callable=io.StringIO)
     def check_stdout(self, tagset, query_regex, expected_output, mock_stdout):
         tagset(query_regex)
         self.assertEqual(mock_stdout.getvalue(), expected_output)
@@ -75,7 +74,6 @@ class TestPosTag(unittest.TestCase):
 
     def test_tagsets_claw5(self):
         self.check_stdout(claws5_tagset, r"VHD", CLAW5_TAGSET_VHD_TEST)
-
 
     def test_pos_tag_rus(self):
         text = "Илья оторопел и дважды перечитал бумажку."
