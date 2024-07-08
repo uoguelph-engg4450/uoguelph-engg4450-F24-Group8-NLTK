@@ -45,7 +45,6 @@ TAGGER_JSONS = {
 
 @jsontags.register_tag
 class AveragedPerceptron:
-
     """An averaged perceptron, as implemented by Matthew Honnibal.
 
     See more implementation details here:
@@ -140,7 +139,6 @@ class AveragedPerceptron:
 
 @jsontags.register_tag
 class PerceptronTagger(TaggerI):
-
     """
     Greedy Averaged Perceptron tagger, as implemented by Matthew Honnibal.
     See more implementation details here:
