@@ -14,7 +14,7 @@ from functools import wraps
 # a full copy of the data which has been re-encoded or repickled.
 DATA_UPDATES = [
     ("chunkers", "maxent_ne_chunker"),
-    ("help", "tagsets"),
+    ("help"),
     ("taggers", "maxent_treebank_pos_tagger"),
     ("tokenizers", "punkt"),
 ]
