@@ -1734,6 +1734,34 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         return "unknown"
 
 
+def load_punkt_params(lang="english"):
+    from nltk.data import find
+
+    def tab2tups(f):
+        return {tuple(x.removesuffix("\n").split("\t")) for x in f}
+
+    lang_dir = find(f"tokenizers/punkt_tab/{lang}/")
+
+    # Make a new Parameters object:
+    params = PunktParameters()
+    with open(f"{lang_dir}/collocations.tab") as f:
+        params.collocations = tab2tups(f)
+    with open(f"{lang_dir}/sent_starters.txt") as f:
+        params.sent_starters = {x.removesuffix("\n") for x in f}
+    with open(f"{lang_dir}/abbrev_types.txt") as f:
+        params.abbrev_types = {x.removesuffix("\n") for x in f}
+    with open(f"{lang_dir}/ortho_context.tab") as f:
+        params.ortho_context = defaultdict(int, {a: int(b) for a, b in tab2tups(f)})
+    return params
+
+
+def punkt_tokenizer(lang="english"):
+    # Make a new Tokenizer
+    tokenizer = PunktSentenceTokenizer()
+    tokenizer._params = load_punkt_params(lang)
+    return tokenizer
+
+
 DEBUG_DECISION_FMT = """Text: {text!r} (at offset {period_index})
 Sentence break? {break_decision} ({reason})
 Collocation? {collocation}

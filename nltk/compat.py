@@ -15,7 +15,6 @@ from functools import wraps
 DATA_UPDATES = [
     ("chunkers", "maxent_ne_chunker"),
     ("taggers", "maxent_treebank_pos_tagger"),
-    ("tokenizers", "punkt"),
 ]
 
 _PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
