@@ -1,7 +1,8 @@
 # Natural Language Toolkit: Chunk parsing API
 #
-# Copyright (C) 2001-2023 NLTK Project
+# Copyright (C) 2001-2024 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
+#         Eric Kafe <kafe.eric@gmail.com> (tab-format models)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -10,7 +11,6 @@ Named entity chunker
 """
 
 import os
-import pickle
 import re
 from xml.etree import ElementTree as ET
 
@@ -40,7 +40,11 @@ class NEChunkParserTagger(ClassifierBasedTagger):
 
     def _classifier_builder(self, train):
         return MaxentClassifier.train(
-            train, algorithm="megam", gaussian_prior_sigma=1, trace=2
+            #          "megam" cannot be the default algorithm since it requires compiling with ocaml
+            train,
+            algorithm="iis",
+            gaussian_prior_sigma=1,
+            trace=2,
         )
 
     def _english_wordlist(self):
@@ -307,6 +311,95 @@ def cmp_chunks(correct, guessed):
             print(f"  {ct:15} {gt:15} {w}")
 
 
+# ======================================================================================
+
+import numpy
+
+
+class Maxent_NE_Chunker(NEChunkParser):
+
+    def __init__(self, fmt):
+        from nltk.data import find
+
+        self.tab_dir = find(f"chunkers/maxent_ne_chunker_tab/english_ace_{fmt}/")
+        # Mock training to initialize the model:
+        self._train([[("John", "NNP"), ("sleeps", "VB"), (".", ".")]])
+        try:
+            del self._tagger._en_wordlist
+        except:
+            pass
+        wgt, mpg, lab, aon = load_params(self.tab_dir)
+        self.set_params(wgt, mpg, lab, aon)
+
+    def get_params(self):
+        classif = self._tagger._classifier
+        ecg = classif._encoding
+        wgt = classif._weights
+        mpg = ecg._mapping
+        lab = ecg._labels
+        aon = ecg._alwayson
+        return wgt, mpg, lab, aon
+
+    def set_params(self, wgt, mpg, lab, aon):
+        from nltk.classify.maxent import BinaryMaxentFeatureEncoding as bmfe
+
+        classif = self._tagger._classifier
+        classif._encoding = bmfe(lab, mpg, alwayson_features=aon)
+        classif.set_weights(wgt)
+
+
+def load_params(tab_dir):
+    from nltk.tabdata import MaxentDecoder as mdec
+
+    with open(f"{tab_dir}/weights.txt") as f:
+        wgt = numpy.array(list(map(numpy.float64, mdec().txt2list(f))))
+
+    with open(f"{tab_dir}/mapping.tab") as f:
+        mpg = mdec().tupkey2dict(f)
+
+    with open(f"{tab_dir}/labels.txt") as f:
+        lab = mdec().txt2list(f)
+
+    with open(f"{tab_dir}/alwayson.tab") as f:
+        aon = mdec().tab2dict(f)
+
+    return wgt, mpg, lab, aon
+
+
+def save_params(wgt, mpg, lab, aon, tab_dir="/tmp"):
+
+    from nltk.tabdata import MaxentEncoder as menc
+
+    with open(f"{tab_dir}/weights.txt", "w") as f:
+        f.write(f"{menc().list2txt(map(repr, wgt.tolist()))}")
+    with open(f"{tab_dir}/mapping.tab", "w") as f:
+        f.write(f"{menc().tupdict2tab(mpg)}")
+    with open(f"{tab_dir}/labels.txt", "w") as f:
+        f.write(f"{menc().list2txt(lab)}")
+    with open(f"{tab_dir}/alwayson.tab", "w") as f:
+        f.write(f"{menc().dict2tab(aon)}")
+
+
+def build_model(fmt="binary"):
+    from os import mkdir
+    from os.path import isdir
+
+    ne_chunker = Maxent_NE_Chunker
+    chunker = ne_chunker(fmt)
+    wgt, mpg, lab, aon = chunker.get_params()
+    model_dir = f"/tmp/english_ace_{fmt}"
+    if not isdir(model_dir):
+        mkdir(model_dir)
+    save_params(wgt, mpg, lab, aon, model_dir)
+
+
+# ======================================================================================
+
+"""
+2004 update: pickles are not supported anymore.
+
+Deprecated:
+
 def build_model(fmt="binary"):
     print("Loading training data...")
     train_paths = [
@@ -342,11 +435,9 @@ def build_model(fmt="binary"):
         pickle.dump(cp, outfile, -1)
 
     return cp
-
+"""
 
 if __name__ == "__main__":
-    # Make sure that the pickled object has the right class name:
-    from nltk.chunk.named_entity import build_model
-
+    # Make sure that the object has the right class name:
     build_model("binary")
     build_model("multiclass")
