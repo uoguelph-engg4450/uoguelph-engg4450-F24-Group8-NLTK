@@ -23,14 +23,14 @@ before it can be used.
 The NLTK data package includes a pre-trained Punkt tokenizer for
 English.
 
-    >>> import nltk.data
+    >>> from nltk.tokenize import PunktTokenizer
     >>> text = '''
     ... Punkt knows that the periods in Mr. Smith and Johann S. Bach
     ... do not mark sentence boundaries.  And sometimes sentences
     ... can start with non-capitalized words.  i is a good variable
     ... name.
     ... '''
-    >>> sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
+    >>> sent_detector = PunktTokenizer()
     >>> print('\n-----\n'.join(sent_detector.tokenize(text.strip())))
     Punkt knows that the periods in Mr. Smith and Johann S. Bach
     do not mark sentence boundaries.
@@ -196,7 +196,7 @@ class PunktLanguageVars:
 
     def __getstate__(self):
         # All modifications to the class are performed by inheritance.
-        # Non-default parameters to be pickled must be defined in the inherited
+        # Non-default parameters to be saved must be defined in the inherited
         # class.
         return 1
 
@@ -1734,32 +1734,66 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         return "unknown"
 
 
-def load_punkt_params(lang="english"):
-    from nltk.data import find
+class PunktTokenizer(PunktSentenceTokenizer):
+    """
+    Punkt Sentence Tokenizer that loads/saves its parameters from/to data files
+    """
 
-    def tab2tups(f):
-        return {tuple(x.removesuffix("\n").split("\t")) for x in f}
+    def __init__(self, lang="english"):
+        PunktSentenceTokenizer.__init__(self)
+        self.load_lang(lang)
 
-    lang_dir = find(f"tokenizers/punkt_tab/{lang}/")
+    def load_lang(self, lang="english"):
+        from nltk.data import find
 
+        lang_dir = find(f"tokenizers/punkt_tab/{lang}/")
+        self._params = load_punkt_params(lang_dir)
+        self._lang = lang
+
+    def save_params(self):
+        save_punkt_params(self._params, dir=f"/tmp/{self._lang}")
+
+
+def load_punkt_params(lang_dir):
+    from nltk.tabdata import PunktDecoder
+
+    pdec = PunktDecoder()
     # Make a new Parameters object:
     params = PunktParameters()
     with open(f"{lang_dir}/collocations.tab") as f:
-        params.collocations = tab2tups(f)
+        params.collocations = pdec.tab2tups(f)
     with open(f"{lang_dir}/sent_starters.txt") as f:
-        params.sent_starters = {x.removesuffix("\n") for x in f}
+        params.sent_starters = pdec.txt2set(f)
     with open(f"{lang_dir}/abbrev_types.txt") as f:
-        params.abbrev_types = {x.removesuffix("\n") for x in f}
+        params.abbrev_types = pdec.txt2set(f)
     with open(f"{lang_dir}/ortho_context.tab") as f:
-        params.ortho_context = defaultdict(int, {a: int(b) for a, b in tab2tups(f)})
+        params.ortho_context = pdec.tab2intdict(f)
     return params
 
 
-def punkt_tokenizer(lang="english"):
-    # Make a new Tokenizer
-    tokenizer = PunktSentenceTokenizer()
-    tokenizer._params = load_punkt_params(lang)
-    return tokenizer
+def save_punkt_params(params, dir="/tmp/punkt_tab"):
+    from os import mkdir
+    from os.path import isdir
+
+    from nltk.tabdata import TabEncoder
+
+    if not isdir(dir):
+        mkdir(dir)
+    tenc = TabEncoder()
+    with open(f"{dir}/collocations.tab", "w") as f:
+        f.write(f"{tenc.tups2tab(params.collocations)}")
+    with open(f"{dir}/sent_starters.txt", "w") as f:
+        f.write(f"{tenc.set2txt(params.sent_starters)}")
+    with open(f"{dir}/abbrev_types.txt", "w") as f:
+        f.write(f"{tenc.set2txt(params.abbrev_types)}")
+    with open(f"{dir}/ortho_context.tab", "w") as f:
+        f.write(f"{tenc.ivdict2tab(params.ortho_context)}")
+
+
+# def punkt_tokenizer(lang="english"):
+# Make a new Tokenizer
+#    tokenizer = PunktTokenizer(lang)
+#    return tokenizer
 
 
 DEBUG_DECISION_FMT = """Text: {text!r} (at offset {period_index})
