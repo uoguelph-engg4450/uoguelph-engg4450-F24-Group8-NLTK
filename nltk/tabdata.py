@@ -12,23 +12,11 @@ class TabEncoder:
     def tups2tab(self, x):
         return "\n".join([self.tup2tab(tup) for tup in x])
 
-
-class MaxentEncoder(TabEncoder):
-
     def dict2tab(self, d):
+        return self.tups2tab(d.items())
+
+    def ivdict2tab(self, d):
         return self.tups2tab([(a, str(b)) for a, b in d.items()])
-
-    def tupdict2tab(self, d):
-        def rep(a, b):
-            if a == "wordlen":
-                return repr(b)
-            if b in [True, False, None]:
-                return f"repr-{b}"
-            return b
-
-        return self.tups2tab(
-            [(a, rep(a, b), c, repr(d)) for ((a, b, c), d) in d.items()]
-        )
 
 
 class TabDecoder:
@@ -45,11 +33,34 @@ class TabDecoder:
     def tab2tups(self, f):
         return [self.tab2tup(x.removesuffix("\n")) for x in f]
 
+    def tab2dict(self, f):
+        return {a: b for a, b in self.tab2tups(f)}
+
+    def tab2ivdict(self, f):
+        return {a: int(b) for a, b in self.tab2tups(f)}
+
+
+# ---------------------------------------------------------------------------
+# Maxent data
+# ---------------------------------------------------------------------------
+
+
+class MaxentEncoder(TabEncoder):
+
+    def tupdict2tab(self, d):
+        def rep(a, b):
+            if a == "wordlen":
+                return repr(b)
+            if b in [True, False, None]:
+                return f"repr-{b}"
+            return b
+
+        return self.tups2tab(
+            [(a, rep(a, b), c, repr(d)) for ((a, b, c), d) in d.items()]
+        )
+
 
 class MaxentDecoder(TabDecoder):
-
-    def tab2dict(self, f):
-        return {a: int(b) for a, b in self.tab2tups(f)}
 
     def tupkey2dict(self, f):
 
@@ -66,5 +77,15 @@ class MaxentDecoder(TabDecoder):
 
         return {(a, rep(a, b), c): int(d) for (a, b, c, d) in self.tab2tups(f)}
 
+
+# ---------------------------------------------------------------------------
+# Punkt data
+# ---------------------------------------------------------------------------
+
+
+class PunktDecoder(TabDecoder):
+
     def tab2intdict(self, f):
-        return defaultdict(int, self.tab2dict(f))
+        from collections import defaultdict
+
+        return defaultdict(int, {a: int(b) for a, b in self.tab2tups(f)})

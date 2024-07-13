@@ -318,17 +318,18 @@ import numpy
 
 class Maxent_NE_Chunker(NEChunkParser):
 
-    def __init__(self, fmt):
+    def __init__(self, fmt="multiclass"):
         from nltk.data import find
 
-        self.tab_dir = find(f"chunkers/maxent_ne_chunker_tab/english_ace_{fmt}/")
+        self._fmt = fmt
+        self._tab_dir = find(f"chunkers/maxent_ne_chunker_tab/english_ace_{fmt}/")
         # Mock training to initialize the model:
         self._train([[("John", "NNP"), ("sleeps", "VB"), (".", ".")]])
         try:
             del self._tagger._en_wordlist
         except:
             pass
-        wgt, mpg, lab, aon = load_params(self.tab_dir)
+        wgt, mpg, lab, aon = load_maxent_params(self._tab_dir)
         self.set_params(wgt, mpg, lab, aon)
 
     def get_params(self):
@@ -347,50 +348,59 @@ class Maxent_NE_Chunker(NEChunkParser):
         classif._encoding = bmfe(lab, mpg, alwayson_features=aon)
         classif.set_weights(wgt)
 
+    def save_params(self):
+        wgt, mpg, lab, aon = self.get_params()
+        fmt = self._fmt
+        save_maxent_params(wgt, mpg, lab, aon, tab_dir=f"/tmp/english_ace_{fmt}/")
 
-def load_params(tab_dir):
-    from nltk.tabdata import MaxentDecoder as mdec
+
+def load_maxent_params(tab_dir):
+    from nltk.tabdata import MaxentDecoder
+
+    mdec = MaxentDecoder()
 
     with open(f"{tab_dir}/weights.txt") as f:
-        wgt = numpy.array(list(map(numpy.float64, mdec().txt2list(f))))
+        wgt = numpy.array(list(map(numpy.float64, mdec.txt2list(f))))
 
     with open(f"{tab_dir}/mapping.tab") as f:
-        mpg = mdec().tupkey2dict(f)
+        mpg = mdec.tupkey2dict(f)
 
     with open(f"{tab_dir}/labels.txt") as f:
-        lab = mdec().txt2list(f)
+        lab = mdec.txt2list(f)
 
     with open(f"{tab_dir}/alwayson.tab") as f:
-        aon = mdec().tab2dict(f)
+        aon = mdec.tab2ivdict(f)
 
     return wgt, mpg, lab, aon
 
 
-def save_params(wgt, mpg, lab, aon, tab_dir="/tmp"):
+def save_maxent_params(wgt, mpg, lab, aon, tab_dir="/tmp"):
 
-    from nltk.tabdata import MaxentEncoder as menc
-
-    with open(f"{tab_dir}/weights.txt", "w") as f:
-        f.write(f"{menc().list2txt(map(repr, wgt.tolist()))}")
-    with open(f"{tab_dir}/mapping.tab", "w") as f:
-        f.write(f"{menc().tupdict2tab(mpg)}")
-    with open(f"{tab_dir}/labels.txt", "w") as f:
-        f.write(f"{menc().list2txt(lab)}")
-    with open(f"{tab_dir}/alwayson.tab", "w") as f:
-        f.write(f"{menc().dict2tab(aon)}")
-
-
-def build_model(fmt="binary"):
     from os import mkdir
     from os.path import isdir
 
-    ne_chunker = Maxent_NE_Chunker
-    chunker = ne_chunker(fmt)
-    wgt, mpg, lab, aon = chunker.get_params()
-    model_dir = f"/tmp/english_ace_{fmt}"
-    if not isdir(model_dir):
-        mkdir(model_dir)
-    save_params(wgt, mpg, lab, aon, model_dir)
+    from nltk.tabdata import MaxentEncoder
+
+    menc = MaxentEncoder()
+    if not isdir(tab_dir):
+        mkdir(tab_dir)
+
+    print(f"Saving Punkt parameters in {tab_dir}")
+
+    with open(f"{tab_dir}/weights.txt", "w") as f:
+        f.write(f"{menc.list2txt(map(repr, wgt.tolist()))}")
+    with open(f"{tab_dir}/mapping.tab", "w") as f:
+        f.write(f"{menc.tupdict2tab(mpg)}")
+    with open(f"{tab_dir}/labels.txt", "w") as f:
+        f.write(f"{menc.list2txt(lab)}")
+    with open(f"{tab_dir}/alwayson.tab", "w") as f:
+        f.write(f"{menc.ivdict2tab(aon)}")
+
+
+def build_model(fmt="multiclass"):
+    chunker = Maxent_NE_Chunker(fmt)
+    chunker.save_params()
+    return chunker
 
 
 # ======================================================================================
