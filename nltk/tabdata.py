@@ -47,9 +47,6 @@ class TabDecoder:
 
 class MaxentEncoder(TabEncoder):
 
-    def dict2tab(self, d):
-        return self.ivdict2tab(d)
-
     def tupdict2tab(self, d):
         def rep(a, b):
             if a == "wordlen":
@@ -64,9 +61,6 @@ class MaxentEncoder(TabEncoder):
 
 
 class MaxentDecoder(TabDecoder):
-
-    def tab2dict(self, f):
-        return self.tab2ivdict(f)
 
     def tupkey2dict(self, f):
 
