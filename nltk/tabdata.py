@@ -1,3 +1,12 @@
+# Natural Language Toolkit: Encode/Decocode Data as Tab-files
+#
+# Copyright (C) 2024 NLTK Project
+# Author: Eric Kafe <kafe.eric@gmail.com>
+# URL: <https://www.nltk.org/>
+# For license information, see LICENSE.TXT
+#
+
+
 class TabEncoder:
 
     def list2txt(self, s):
@@ -16,6 +25,7 @@ class TabEncoder:
         return self.tups2tab(d.items())
 
     def ivdict2tab(self, d):
+        # From integer-value dictionary
         return self.tups2tab([(a, str(b)) for a, b in d.items()])
 
 
@@ -37,6 +47,7 @@ class TabDecoder:
         return {a: b for a, b in self.tab2tups(f)}
 
     def tab2ivdict(self, f):
+        # To integer-value dictionary
         return {a: int(b) for a, b in self.tab2tups(f)}
 
 
