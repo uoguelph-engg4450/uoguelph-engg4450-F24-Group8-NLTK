@@ -33,9 +33,12 @@ class NEChunkParserTagger(ClassifierBasedTagger):
     The IOB tagger used by the chunk parser.
     """
 
-    def __init__(self, train):
+    def __init__(self, train=None, classifier=None):
         ClassifierBasedTagger.__init__(
-            self, train=train, classifier_builder=self._classifier_builder
+            self,
+            train=train,
+            classifier_builder=self._classifier_builder,
+            classifier=classifier,
         )
 
     def _classifier_builder(self, train):
@@ -313,88 +316,39 @@ def cmp_chunks(correct, guessed):
 
 # ======================================================================================
 
-import numpy
-
 
 class Maxent_NE_Chunker(NEChunkParser):
+    """
+    Expected input: list of pos-tagged words
+    """
 
     def __init__(self, fmt="multiclass"):
         from nltk.data import find
 
         self._fmt = fmt
         self._tab_dir = find(f"chunkers/maxent_ne_chunker_tab/english_ace_{fmt}/")
-        # Mock training to initialize the model:
-        self._train([[("John", "NNP"), ("sleeps", "VB"), (".", ".")]])
-        try:
-            del self._tagger._en_wordlist
-        except:
-            pass
-        wgt, mpg, lab, aon = load_maxent_params(self._tab_dir)
-        self.set_params(wgt, mpg, lab, aon)
+        self.load_params()
 
-    def get_params(self):
+    def load_params(self):
+        from nltk.classify.maxent import BinaryMaxentFeatureEncoding, load_maxent_params
+
+        wgt, mpg, lab, aon = load_maxent_params(self._tab_dir)
+        mc = MaxentClassifier(
+            BinaryMaxentFeatureEncoding(lab, mpg, alwayson_features=aon), wgt
+        )
+        self._tagger = NEChunkParserTagger(classifier=mc)
+
+    def save_params(self):
+        from nltk.classify.maxent import save_maxent_params
+
         classif = self._tagger._classifier
         ecg = classif._encoding
         wgt = classif._weights
         mpg = ecg._mapping
         lab = ecg._labels
         aon = ecg._alwayson
-        return wgt, mpg, lab, aon
-
-    def set_params(self, wgt, mpg, lab, aon):
-        from nltk.classify.maxent import BinaryMaxentFeatureEncoding as bmfe
-
-        classif = self._tagger._classifier
-        classif._encoding = bmfe(lab, mpg, alwayson_features=aon)
-        classif.set_weights(wgt)
-
-    def save_params(self):
-        wgt, mpg, lab, aon = self.get_params()
         fmt = self._fmt
         save_maxent_params(wgt, mpg, lab, aon, tab_dir=f"/tmp/english_ace_{fmt}/")
-
-
-def load_maxent_params(tab_dir):
-    from nltk.tabdata import MaxentDecoder
-
-    mdec = MaxentDecoder()
-
-    with open(f"{tab_dir}/weights.txt") as f:
-        wgt = numpy.array(list(map(numpy.float64, mdec.txt2list(f))))
-
-    with open(f"{tab_dir}/mapping.tab") as f:
-        mpg = mdec.tupkey2dict(f)
-
-    with open(f"{tab_dir}/labels.txt") as f:
-        lab = mdec.txt2list(f)
-
-    with open(f"{tab_dir}/alwayson.tab") as f:
-        aon = mdec.tab2ivdict(f)
-
-    return wgt, mpg, lab, aon
-
-
-def save_maxent_params(wgt, mpg, lab, aon, tab_dir="/tmp"):
-
-    from os import mkdir
-    from os.path import isdir
-
-    from nltk.tabdata import MaxentEncoder
-
-    menc = MaxentEncoder()
-    if not isdir(tab_dir):
-        mkdir(tab_dir)
-
-    print(f"Saving Punkt parameters in {tab_dir}")
-
-    with open(f"{tab_dir}/weights.txt", "w") as f:
-        f.write(f"{menc.list2txt(map(repr, wgt.tolist()))}")
-    with open(f"{tab_dir}/mapping.tab", "w") as f:
-        f.write(f"{menc.tupdict2tab(mpg)}")
-    with open(f"{tab_dir}/labels.txt", "w") as f:
-        f.write(f"{menc.list2txt(lab)}")
-    with open(f"{tab_dir}/alwayson.tab", "w") as f:
-        f.write(f"{menc.ivdict2tab(aon)}")
 
 
 def build_model(fmt="multiclass"):
