@@ -13,8 +13,6 @@ from functools import wraps
 # The following datasets have a /PY3 subdirectory containing
 # a full copy of the data which has been re-encoded or repickled.
 DATA_UPDATES = [
-    ("chunkers", "maxent_ne_chunker"),
-    ("taggers", "maxent_treebank_pos_tagger"),
     ("tokenizers", "punkt"),
 ]
 
