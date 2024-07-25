@@ -30,7 +30,8 @@ English.
     ... can start with non-capitalized words.  i is a good variable
     ... name.
     ... '''
-    >>> sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
+#    >>> sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
+    >>> sent_detector = PunktTokenizer()
     >>> print('\n-----\n'.join(sent_detector.tokenize(text.strip())))
     Punkt knows that the periods in Mr. Smith and Johann S. Bach
     do not mark sentence boundaries.
@@ -1736,8 +1737,9 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
 class PunktTokenizer(PunktSentenceTokenizer):
 
-    #    def __init__(self, lang="english"):
-    #        self.load_lang(lang)
+    def __init__(self, lang="english"):
+        PunktSentenceTokenizer.__init__(self)
+        self.load_lang(lang)
 
     def load_lang(self, lang="english"):
         from nltk.data import find
