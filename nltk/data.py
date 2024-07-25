@@ -658,6 +658,15 @@ AUTO_FORMATS = {
 }
 
 
+def restricted_pickle_load(string):
+    """
+    Prevents any class or function from loading.
+    """
+    from nltk.app.wordnet_app import RestrictedUnpickler
+
+    return RestrictedUnpickler(BytesIO(string)).load()
+
+
 def load(
     resource_url,
     format="auto",
@@ -751,7 +760,7 @@ def load(
     if format == "raw":
         resource_val = opened_resource.read()
     elif format == "pickle":
-        resource_val = pickle.load(opened_resource)
+        resource_val = restricted_pickle_load(opened_resource.read())
     elif format == "json":
         import json
 
