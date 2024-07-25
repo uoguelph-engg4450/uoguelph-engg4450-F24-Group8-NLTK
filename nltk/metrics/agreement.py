@@ -304,7 +304,6 @@ class AnnotationTask:
         total_disagreement = 0.0
         total_ratings = 0
         all_valid_labels_freq = FreqDist([])
-
         total_do = 0.0  # Total observed disagreement for all items.
         for i, itemdata in self._grouped_data("item"):
             label_freqs = FreqDist(x["labels"] for x in itemdata)
@@ -313,8 +312,12 @@ class AnnotationTask:
                 # Ignore the item.
                 continue
             all_valid_labels_freq += label_freqs
-            total_do += self.Disagreement(label_freqs) * labels_count
-
+            total_do += self.Disagreement(label_freqs) * labels_count  
+        
+        if len(all_valid_labels_freq.keys()) == 1:
+            log.debug("Only one valid annotation value, alpha returning 1.")
+            return 1
+        
         do = total_do / sum(all_valid_labels_freq.values())
 
         de = self.Disagreement(all_valid_labels_freq)  # Expected disagreement.
