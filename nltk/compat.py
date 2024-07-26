@@ -12,7 +12,9 @@ from functools import wraps
 
 # The following datasets have a /PY3 subdirectory containing
 # a full copy of the data which has been re-encoded or repickled.
-DATA_UPDATES = []
+DATA_UPDATES = [
+    ("tokenizers", "punkt"),
+]
 
 _PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
 
