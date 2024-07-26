@@ -447,7 +447,9 @@ Sentence Segmentation
 
 Punkt is a language-neutral sentence segmentation tool.  We
 
-    >>> sent_tokenizer=nltk.data.load('tokenizers/punkt/portuguese.pickle')
+    >>> from nltk.tokenize import PunktTokenizer
+    >>> sent_tokenizer = PunktTokenizer("portuguese")
+
     >>> raw_text = machado.raw('romance/marm05.txt')
     >>> sentences = sent_tokenizer.tokenize(raw_text)
     >>> for sent in sentences[1000:1005]:
