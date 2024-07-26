@@ -39,7 +39,7 @@ class PlaintextCorpusReader(CorpusReader):
         root,
         fileids,
         word_tokenizer=WordPunctTokenizer(),
-        sent_tokenizer=nltk.data.LazyLoader("tokenizers/punkt/english.pickle"),
+        sent_tokenizer=PunktTokenizer(),
         para_block_reader=read_blankline_block,
         encoding="utf8",
     ):
@@ -163,10 +163,7 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
 class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReader):
     def __init__(self, *args, **kwargs):
         CategorizedCorpusReader.__init__(self, kwargs)
-        kwargs["sent_tokenizer"] = nltk.data.LazyLoader(
-            "tokenizers/punkt/portuguese.pickle"
-        )
-        PlaintextCorpusReader.__init__(self, *args, **kwargs)
+        kwargs["sent_tokenizer"] = PunktTokenizer("portuguese")
 
 
 class EuroparlCorpusReader(PlaintextCorpusReader):

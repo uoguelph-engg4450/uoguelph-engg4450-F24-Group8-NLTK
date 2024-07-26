@@ -13,7 +13,6 @@ Utility methods for Sentiment Analysis.
 import codecs
 import csv
 import json
-import pickle
 import random
 import re
 import sys
@@ -23,6 +22,7 @@ from copy import deepcopy
 import nltk
 from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
+from nltk.tokenize import PunktTokenizer
 from nltk.tokenize.casual import EMOTICON_RE
 
 # ////////////////////////////////////////////////////////////
@@ -428,7 +428,7 @@ def parse_tweets_set(
     """
     tweets = []
     if not sent_tokenizer:
-        sent_tokenizer = load("tokenizers/punkt/english.pickle")
+        sent_tokenizer = PunktTokenizer()
 
     with codecs.open(filename, "rt") as csvfile:
         reader = csv.reader(csvfile)
