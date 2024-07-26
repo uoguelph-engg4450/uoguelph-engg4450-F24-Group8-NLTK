@@ -66,8 +66,6 @@ from nltk.tokenize.casual import TweetTokenizer, casual_tokenize
 from nltk.tokenize.destructive import NLTKWordTokenizer
 from nltk.tokenize.legality_principle import LegalitySyllableTokenizer
 from nltk.tokenize.mwe import MWETokenizer
-
-# from nltk.tokenize.punkt import PunktSentenceTokenizer
 from nltk.tokenize.punkt import PunktTokenizer
 from nltk.tokenize.regexp import (
     BlanklineTokenizer,
@@ -105,7 +103,6 @@ def sent_tokenize(text, language="english"):
     :param text: text to split into sentences
     :param language: the model name in the Punkt corpus
     """
-    #    tokenizer = load(f"tokenizers/punkt/{language}.pickle")
     tokenizer = PunktTokenizer(language)
     return tokenizer.tokenize(text)
 
