@@ -21,10 +21,7 @@ loaded.  The ``nltk:`` protocol loads files from the NLTK data
 distribution.
 
 However, since July 2024, unpickling is restricted to simple types,
-so the following now fails with a pickle.Unpickling Error:
-
-    >>> tokenizer = nltk.data.load('nltk:tokenizers/punkt/english.pickle')
-
+and now fails with a pickle.Unpickling Error.
 Instead, all the unsafe pickle packages are now replaced by classes:
 
     >>> from nltk.tokenize import PunktTokenizer

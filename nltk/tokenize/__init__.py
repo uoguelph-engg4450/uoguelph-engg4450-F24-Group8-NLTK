@@ -66,7 +66,7 @@ from nltk.tokenize.casual import TweetTokenizer, casual_tokenize
 from nltk.tokenize.destructive import NLTKWordTokenizer
 from nltk.tokenize.legality_principle import LegalitySyllableTokenizer
 from nltk.tokenize.mwe import MWETokenizer
-from nltk.tokenize.punkt import PunktTokenizer
+from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktTokenizer
 from nltk.tokenize.regexp import (
     BlanklineTokenizer,
     RegexpTokenizer,
