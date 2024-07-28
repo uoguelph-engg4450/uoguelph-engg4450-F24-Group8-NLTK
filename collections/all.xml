@@ -45,7 +45,9 @@
   <item ref="machado" />
   <item ref="masc_tagged" />
   <item ref="maxent_ne_chunker" />
+  <item ref="maxent_ne_chunker_tab" />
   <item ref="maxent_treebank_pos_tagger" />
+  <item ref="maxent_treebank_pos_tagger_tab" />
   <item ref="moses_sample" />
   <item ref="movie_reviews" />
   <item ref="mte_teip5" />
@@ -72,6 +74,7 @@
   <item ref="pros_cons" />
   <item ref="ptb" />
   <item ref="punkt" />
+  <item ref="punkt_tab" />
   <item ref="qc" />
   <item ref="reuters" />
   <item ref="rslp" />
@@ -92,7 +95,6 @@
   <item ref="swadesh" />
   <item ref="switchboard" />
   <item ref="tagsets" />
-  <item ref="tagsets_json" />
   <item ref="timit" />
   <item ref="toolbox" />
   <item ref="treebank" />
