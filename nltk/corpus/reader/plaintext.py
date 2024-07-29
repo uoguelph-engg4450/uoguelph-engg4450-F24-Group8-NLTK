@@ -39,7 +39,7 @@ class PlaintextCorpusReader(CorpusReader):
         root,
         fileids,
         word_tokenizer=WordPunctTokenizer(),
-        sent_tokenizer=PunktTokenizer(),
+        sent_tokenizer=None,
         para_block_reader=read_blankline_block,
         encoding="utf8",
     ):
@@ -85,7 +85,10 @@ class PlaintextCorpusReader(CorpusReader):
         :rtype: list(list(str))
         """
         if self._sent_tokenizer is None:
-            raise ValueError("No sentence tokenizer for this corpus")
+            try:
+                self._sent_tokenizer = PunktTokenizer()
+            except:
+                raise ValueError("No sentence tokenizer for this corpus")
 
         return concat(
             [
@@ -102,7 +105,10 @@ class PlaintextCorpusReader(CorpusReader):
         :rtype: list(list(list(str)))
         """
         if self._sent_tokenizer is None:
-            raise ValueError("No sentence tokenizer for this corpus")
+            try:
+                self._sent_tokenizer = PunktTokenizer()
+            except:
+                raise ValueError("No sentence tokenizer for this corpus")
 
         return concat(
             [
