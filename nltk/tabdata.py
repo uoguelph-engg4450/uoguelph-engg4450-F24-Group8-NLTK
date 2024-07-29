@@ -7,6 +7,12 @@
 #
 
 
+def rm_nl(s):
+    if s[-1] == "\n":
+        return s[:-1]
+    return s
+
+
 class TabEncoder:
 
     def list2txt(self, s):
@@ -32,16 +38,16 @@ class TabEncoder:
 class TabDecoder:
 
     def txt2list(self, f):
-        return [x.removesuffix("\n") for x in f]
+        return [rm_nl(x) for x in f]
 
     def txt2set(self, f):
-        return {x.removesuffix("\n") for x in f}
+        return {rm_nl(x) for x in f}
 
     def tab2tup(self, s):
         return tuple(s.split("\t"))
 
     def tab2tups(self, f):
-        return [self.tab2tup(x.removesuffix("\n")) for x in f]
+        return [self.tab2tup(rm_nl(x)) for x in f]
 
     def tab2dict(self, f):
         return {a: b for a, b in self.tab2tups(f)}
