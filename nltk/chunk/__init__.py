@@ -174,16 +174,32 @@ def ne_chunker(fmt="multiclass"):
     return Maxent_NE_Chunker(fmt)
 
 
-def ne_chunk(chunker, tagged_tokens):
+def ne_chunk(tagged_tokens, binary=False):
     """
-    Use chunker to chunk the given list of tagged tokens.
+    Use NLTK's currently recommended named entity chunker to
+    chunk the given list of tagged tokens.
+
+    >>> from nltk.chunk import ne_chunk
+    >>> from nltk.corpus import treebank
+    >>> from pprint import pprint
+    >>> pprint(ne_chunk(treebank.tagged_sents()[2][8:14])) # doctest: +NORMALIZE_WHITESPACE
+    Tree('S', [('chairman', 'NN'), ('of', 'IN'), Tree('ORGANIZATION', [('Consolidated', 'NNP'), ('Gold', 'NNP'), ('Fields', 'NNP')]), ('PLC', 'NNP')])
+
     """
+    if binary:
+        chunker = ne_chunker(fmt="binary")
+    else:
+        chunker = ne_chunker()
     return chunker.parse(tagged_tokens)
 
 
-def ne_chunk_sents(chunker, tagged_sentences):
+def ne_chunk_sents(tagged_sentences, binary=False):
     """
-    Use chunker to chunk the given list of tagged sentences,
-    each consisting of a list of tagged tokens.
+    Use NLTK's currently recommended named entity chunker to chunk the
+    given list of tagged sentences, each consisting of a list of tagged tokens.
     """
+    if binary:
+        chunker = ne_chunker(fmt="binary")
+    else:
+        chunker = ne_chunker()
     return chunker.parse_sents(tagged_sentences)
