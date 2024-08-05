@@ -39,7 +39,7 @@ class PlaintextCorpusReader(CorpusReader):
         root,
         fileids,
         word_tokenizer=WordPunctTokenizer(),
-        sent_tokenizer=nltk.data.LazyLoader("tokenizers/punkt/english.pickle"),
+        sent_tokenizer=None,
         para_block_reader=read_blankline_block,
         encoding="utf8",
     ):
@@ -85,7 +85,10 @@ class PlaintextCorpusReader(CorpusReader):
         :rtype: list(list(str))
         """
         if self._sent_tokenizer is None:
-            raise ValueError("No sentence tokenizer for this corpus")
+            try:
+                self._sent_tokenizer = PunktTokenizer()
+            except:
+                raise ValueError("No sentence tokenizer for this corpus")
 
         return concat(
             [
@@ -102,7 +105,10 @@ class PlaintextCorpusReader(CorpusReader):
         :rtype: list(list(list(str)))
         """
         if self._sent_tokenizer is None:
-            raise ValueError("No sentence tokenizer for this corpus")
+            try:
+                self._sent_tokenizer = PunktTokenizer()
+            except:
+                raise ValueError("No sentence tokenizer for this corpus")
 
         return concat(
             [
@@ -163,10 +169,7 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
 class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReader):
     def __init__(self, *args, **kwargs):
         CategorizedCorpusReader.__init__(self, kwargs)
-        kwargs["sent_tokenizer"] = nltk.data.LazyLoader(
-            "tokenizers/punkt/portuguese.pickle"
-        )
-        PlaintextCorpusReader.__init__(self, *args, **kwargs)
+        kwargs["sent_tokenizer"] = PunktTokenizer("portuguese")
 
 
 class EuroparlCorpusReader(PlaintextCorpusReader):
