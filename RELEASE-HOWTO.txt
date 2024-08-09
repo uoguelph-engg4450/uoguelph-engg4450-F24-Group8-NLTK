@@ -1,6 +1,12 @@
 Building an NLTK distribution
 ----------------------------------
 
+0. Packages required to build, test, and distribute NLTK
+   - py312-pytest py312-requests py312-sphinx 
+   - py312-numpy py312-matplotlib py312-tkinter
+   - sqlite3-tcl
+   - pip install sphinxcontrib-apidoc twython
+
 1. Testing
    - Check no errors are reported in our continuous integration service:
      https://github.com/nltk/nltk/actions
@@ -44,7 +50,7 @@ Building an NLTK distribution
      cd ../nltk
      git tag -a 3.X.Y -m "version 3.X.Y"
      git push --tags
-     verify that it shows up here: https://github.com/nltk/nltk/releases
+     verify that it shows up here: https://github.com/nltk/nltk/tags
      This is important for the website, as the footer will link to the
      tag with the version from web/conf.py.
 
