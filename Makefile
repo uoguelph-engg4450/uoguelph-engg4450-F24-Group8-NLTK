@@ -36,15 +36,8 @@ demotest:
 # DISTRIBUTIONS
 ########################################################################
 
-dist: zipdist
-
-# twine only permits one source distribution
-#gztardist: clean_code
-#	$(PYTHON) setup.py -q sdist --format=gztar
-zipdist: clean_code
-	$(PYTHON) setup.py -q sdist --format=zip bdist_wheel
-windist: clean_code
-	$(PYTHON) setup.py -q bdist --format=wininst --plat-name=win32
+dist: clean_code
+	$(PYTHON) -m build
 
 ########################################################################
 # CLEAN
