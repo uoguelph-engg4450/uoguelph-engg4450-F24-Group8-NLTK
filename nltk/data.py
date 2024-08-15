@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2024 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
+# Author: ekaf (Restricting and switching pickles)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -681,6 +682,41 @@ def switch_punkt(lang="english"):
     return tok(lang)
 
 
+def switch_chunker(fmt="multiclass"):
+    """
+    Return a pickle-free Named Entity Chunker instead of loading a pickle.
+
+
+    """
+    from nltk.chunker import ne_chunker
+
+    return ne_chunker(fmt)
+
+
+def switch_t_tagger():
+    """
+    Return a pickle-free Treebank Pos Tagger instead of loading a pickle.
+
+    """
+    from nltk.classifier.maxent import maxent_pos_tagger
+
+    return maxent_pos_tagger()
+
+
+def switch_p_tagger(lang):
+    """
+    Return a pickle-free Averaged Perceptron Tagger instead of loading a pickle.
+
+    """
+    from nltk.tag import _get_tagger
+
+    if lang == "ru":
+        lang = "rus"
+    else:
+        lang = None
+    return _get_tagger(lang)
+
+
 def load(
     resource_url,
     format="auto",
@@ -771,6 +807,12 @@ def load(
         fil = os.path.split(path_[:-7])[-1]
         if path_.startswith("tokenizers/punkt"):
             return switch_punkt(fil)
+        elif path_.startswith("chunkers/maxent_ne_chunker"):
+            return switch_chunker(fil.split("_")[-1])
+        elif path_.startswith("taggers/maxent_treebank_pos_tagger"):
+            return switch_t_tagger()
+        elif path_.startswith("taggers/averaged_perceptron_tagger"):
+            return switch_p_tagger(fil.split("_")[-1])
 
     # Let the user know what's going on.
     if verbose:
