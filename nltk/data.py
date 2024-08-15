@@ -667,6 +667,20 @@ def restricted_pickle_load(string):
     return RestrictedUnpickler(BytesIO(string)).load()
 
 
+def switch_punkt(lang="english"):
+    """
+    Return a pickle-free Punkt tokenizer instead of loading a pickle.
+
+    >>> import nltk
+    >>> tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    >>> print(tokenizer.tokenize("Hello! How are you?"))
+    ['Hello!', 'How are you?']
+    """
+    from nltk.tokenize import PunktTokenizer as tok
+
+    return tok(lang)
+
+
 def load(
     resource_url,
     format="auto",
@@ -749,6 +763,14 @@ def load(
             if verbose:
                 print(f"<<Using cached copy of {resource_url}>>")
             return resource_val
+
+    resource_url = normalize_resource_url(resource_url)
+    protocol, path_ = split_resource_url(resource_url)
+
+    if path_[-7:] == ".pickle":
+        fil = os.path.split(path_[:-7])[-1]
+        if path_.startswith("tokenizers/punkt"):
+            return switch_punkt(fil)
 
     # Let the user know what's going on.
     if verbose:
