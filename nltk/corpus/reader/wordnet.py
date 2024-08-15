@@ -1094,14 +1094,12 @@ class Synset(_WordNetObject):
     def __repr__(self):
         return f"{type(self).__name__}('{self._name}')"
 
-    def _related(self, relation_symbol, sort=False):
+    def _related(self, relation_symbol):
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
         if relation_symbol not in self._pointers:
             return []
         pointer_tuples = self._pointers[relation_symbol]
         r = [get_synset(pos, offset) for pos, offset in pointer_tuples]
-        if sort:
-            r.sort()
         return r
 
 
