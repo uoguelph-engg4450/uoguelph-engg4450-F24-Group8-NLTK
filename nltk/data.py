@@ -686,9 +686,15 @@ def switch_chunker(fmt="multiclass"):
     """
     Return a pickle-free Named Entity Chunker instead of loading a pickle.
 
+    >>> import nltk
+    >>> from nltk.corpus import treebank
+    >>> from pprint import pprint
+    >>> chunker = nltk.data.load('chunkers/maxent_ne_chunker/PY3/english_ace_multiclass.pickle')
+    >>> pprint(chunker.parse(treebank.tagged_sents()[2][8:14])) # doctest: +NORMALIZE_WHITESPACE
+    Tree('S', [('chairman', 'NN'), ('of', 'IN'), Tree('ORGANIZATION', [('Consolidated', 'NNP'), ('Gold', 'NNP'), ('Fields', 'NNP')]), ('PLC', 'NNP')])
 
     """
-    from nltk.chunker import ne_chunker
+    from nltk.chunk import ne_chunker
 
     return ne_chunker(fmt)
 
@@ -697,8 +703,14 @@ def switch_t_tagger():
     """
     Return a pickle-free Treebank Pos Tagger instead of loading a pickle.
 
+    >>> import nltk
+    >>> from nltk.tokenize import word_tokenize
+    >>> tagger = nltk.data.load('taggers/maxent_treebank_pos_tagger/PY3/english.pickle')
+    >>> print(tagger.tag(word_tokenize("Hello, how are you?")))
+    [('Hello', 'NNP'), (',', ','), ('how', 'WRB'), ('are', 'VBP'), ('you', 'PRP'), ('?', '.')]
+
     """
-    from nltk.classifier.maxent import maxent_pos_tagger
+    from nltk.classify.maxent import maxent_pos_tagger
 
     return maxent_pos_tagger()
 
@@ -706,6 +718,12 @@ def switch_t_tagger():
 def switch_p_tagger(lang):
     """
     Return a pickle-free Averaged Perceptron Tagger instead of loading a pickle.
+
+    >>> import nltk
+    >>> from nltk.tokenize import word_tokenize
+    >>> tagger = nltk.data.load('taggers/averaged_perceptron_tagger/averaged_perceptron_tagger.pickle')
+    >>> print(tagger.tag(word_tokenize("Hello, how are you?")))
+    [('Hello', 'NNP'), (',', ','), ('how', 'WRB'), ('are', 'VBP'), ('you', 'PRP'), ('?', '.')]
 
     """
     from nltk.tag import _get_tagger
@@ -804,6 +822,8 @@ def load(
     protocol, path_ = split_resource_url(resource_url)
 
     if path_[-7:] == ".pickle":
+        if verbose:
+            print(f"<<Loading pickle-free alternative to {resource_url}>>")
         fil = os.path.split(path_[:-7])[-1]
         if path_.startswith("tokenizers/punkt"):
             return switch_punkt(fil)
