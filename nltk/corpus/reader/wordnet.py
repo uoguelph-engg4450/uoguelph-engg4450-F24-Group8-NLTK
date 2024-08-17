@@ -588,14 +588,13 @@ class Synset(_WordNetObject):
         (from 'animal.n.01' to 'entity.n.01'):
 
         >>> dog = wn.synset('dog.n.01')
-        >>> hyp = lambda s:s.hypernyms()
-        >>> print(list(dog.closure(hyp)))
-        [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'),\
- Synset('animal.n.01'), Synset('placental.n.01'), Synset('organism.n.01'),\
- Synset('mammal.n.01'), Synset('living_thing.n.01'), Synset('vertebrate.n.01'),\
- Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),\
- Synset('physical_entity.n.01'), Synset('entity.n.01')]
-
+        >>> hyp = lambda s:sorted(s.hypernyms())
+        >>> print(sorted(dog.closure(hyp)))
+        [Synset('animal.n.01'), Synset('canine.n.02'), Synset('carnivore.n.01'),\
+Synset('chordate.n.01'), Synset('domestic_animal.n.01'), Synset('entity.n.01'),\
+Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('object.n.01'),\
+Synset('organism.n.01'), Synset('physical_entity.n.01'), Synset('placental.n.01'),\
+Synset('vertebrate.n.01'), Synset('whole.n.02')]
         UserWarning: Discarded redundant search for Synset('animal.n.01') at depth 7
         """
 
@@ -619,7 +618,7 @@ class Synset(_WordNetObject):
         >>> from nltk.corpus import wordnet as wn
         >>> from pprint import pprint
         >>> computer = wn.synset('computer.n.01')
-        >>> topic = lambda s:s.topic_domains()
+        >>> topic = lambda s:sorted(s.topic_domains())
         >>> pprint(computer.tree(topic))
         [Synset('computer.n.01'), [Synset('computer_science.n.01')]]
 
@@ -629,7 +628,7 @@ class Synset(_WordNetObject):
         But keep duplicate branches (from 'animal.n.01' to 'entity.n.01'):
 
         >>> dog = wn.synset('dog.n.01')
-        >>> hyp = lambda s:s.hypernyms()
+        >>> hyp = lambda s:sorted(s.hypernyms())
         >>> pprint(dog.tree(hyp))
         [Synset('dog.n.01'),
          [Synset('canine.n.02'),
