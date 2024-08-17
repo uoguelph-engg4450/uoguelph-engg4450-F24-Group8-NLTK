@@ -6,7 +6,6 @@
 # For license information, see LICENSE.TXT
 
 import bisect
-
 from functools import total_ordering
 from itertools import chain, islice
 
