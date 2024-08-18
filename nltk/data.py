@@ -52,7 +52,6 @@ except ImportError:
     from zlib import Z_FINISH as FLUSH
 
 from nltk import grammar, sem
-from nltk.compat import add_py3_data, py3_data
 from nltk.internals import deprecated
 
 textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
@@ -300,7 +299,6 @@ class FileSystemPathPointer(PathPointer, str):
     directly via a given absolute path.
     """
 
-    @py3_data
     def __init__(self, _path):
         """
         Create a new path pointer for the given absolute path.
@@ -349,7 +347,6 @@ class BufferedGzipFile(GzipFile):
     Python versions.
     """
 
-    @py3_data
     def __init__(
         self, filename=None, mode=None, compresslevel=9, fileobj=None, **kwargs
     ):
@@ -382,7 +379,6 @@ class ZipFilePathPointer(PathPointer):
     which can be accessed by reading that zipfile.
     """
 
-    @py3_data
     def __init__(self, zipfile, entry=""):
         """
         Create a new path pointer pointing at the specified entry
@@ -791,7 +787,6 @@ def load(
     :param encoding: the encoding of the input; only used for text formats.
     """
     resource_url = normalize_resource_url(resource_url)
-    resource_url = add_py3_data(resource_url)
 
     # Determine the format of the resource.
     if format == "auto":
@@ -818,7 +813,6 @@ def load(
                 print(f"<<Using cached copy of {resource_url}>>")
             return resource_val
 
-    resource_url = normalize_resource_url(resource_url)
     protocol, path_ = split_resource_url(resource_url)
 
     if path_[-7:] == ".pickle":
@@ -979,7 +973,7 @@ def _open(resource_url):
 
 
 class LazyLoader:
-    @py3_data
+
     def __init__(self, _path):
         self._path = _path
 
@@ -1020,7 +1014,6 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
     read-only (i.e. ``write()`` and ``writestr()`` are disabled.
     """
 
-    @py3_data
     def __init__(self, filename):
         if not isinstance(filename, str):
             raise TypeError("ReopenableZipFile filename must be a string")
@@ -1077,7 +1070,6 @@ class SeekableUnicodeStreamReader:
 
     DEBUG = True  # : If true, then perform extra sanity checks.
 
-    @py3_data
     def __init__(self, stream, encoding, errors="strict"):
         # Rewind the stream to its beginning.
         stream.seek(0)

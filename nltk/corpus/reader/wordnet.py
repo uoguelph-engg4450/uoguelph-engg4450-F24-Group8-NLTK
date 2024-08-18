@@ -589,12 +589,13 @@ class Synset(_WordNetObject):
 
         >>> dog = wn.synset('dog.n.01')
         >>> hyp = lambda s:sorted(s.hypernyms())
-        >>> print(sorted(dog.closure(hyp)))
-        [Synset('animal.n.01'), Synset('canine.n.02'), Synset('carnivore.n.01'),\
-Synset('chordate.n.01'), Synset('domestic_animal.n.01'), Synset('entity.n.01'),\
-Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('object.n.01'),\
-Synset('organism.n.01'), Synset('physical_entity.n.01'), Synset('placental.n.01'),\
-Synset('vertebrate.n.01'), Synset('whole.n.02')]
+        >>> print(list(dog.closure(hyp)))
+        [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'),\
+ Synset('animal.n.01'), Synset('placental.n.01'), Synset('organism.n.01'),\
+ Synset('mammal.n.01'), Synset('living_thing.n.01'), Synset('vertebrate.n.01'),\
+ Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),\
+ Synset('physical_entity.n.01'), Synset('entity.n.01')]
+
         UserWarning: Discarded redundant search for Synset('animal.n.01') at depth 7
         """
 
