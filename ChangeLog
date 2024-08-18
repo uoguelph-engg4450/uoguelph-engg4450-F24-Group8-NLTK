@@ -1,4 +1,4 @@
-Version 3.9-beta1 2024-08-16
+Version 3.9 2024-08-18
 * Avoid need for pickled models, resolves security vulnerability CVE-2024-39705
 * No longer sort WordNet synsets and relations (sort in calling function when required)
 * Add Python 3.12 support
