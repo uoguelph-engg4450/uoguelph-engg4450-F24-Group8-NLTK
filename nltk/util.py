@@ -408,7 +408,9 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1, verbose=False):
                 pass
 
 
-def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None, verbose=False):
+def acyclic_depth_first(
+    tree, children=iter, depth=-1, cut_mark=None, traversed=None, verbose=False
+):
     """Traverse the nodes of a tree in depth-first order,
     discarding eventual cycles within any branch,
     adding cut_mark (when specified) if cycles were truncated.
