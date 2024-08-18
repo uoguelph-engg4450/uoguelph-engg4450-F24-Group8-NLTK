@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2023 NLTK Project
+# Copyright (C) 2001-2024 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Eric Kafe <kafe.eric@gmail.com> (acyclic closures)
 # URL: <https://www.nltk.org/>
@@ -363,7 +363,7 @@ def unweighted_minimum_spanning_digraph(tree, children=iter, shapes=None, attr=N
     >>> import nltk
     >>> wn=nltk.corpus.wordnet
     >>> from nltk.util import unweighted_minimum_spanning_digraph as umsd
-    >>> print(umsd(wn.synset('bound.a.01'), lambda s:s.also_sees()))
+    >>> print(umsd(wn.synset('bound.a.01'), lambda s:sorted(s.also_sees())))
     digraph G {
     "Synset('bound.a.01')" -> "Synset('unfree.a.02')";
     "Synset('unfree.a.02')" -> "Synset('confined.a.02')";
@@ -439,7 +439,7 @@ def acyclic_depth_first(
     :param verbose: to print warnings when cycles are discarded
     :return: the tree in depth-first order
 
-        Traverse the nodes of a tree in depth-first order,
+    Traverse the nodes of a tree in depth-first order,
     discarding eventual cycles within any branch,
     adding cut_mark (when specified) if cycles were truncated.
        The first argument should be the tree root;
@@ -452,7 +452,7 @@ def acyclic_depth_first(
     >>> from nltk.util import acyclic_depth_first as acyclic_tree
     >>> wn=nltk.corpus.wordnet
     >>> from pprint import pprint
-    >>> pprint(acyclic_tree(wn.synset('dog.n.01'), lambda s:s.hypernyms(),cut_mark='...'))
+    >>> pprint(acyclic_tree(wn.synset('dog.n.01'), lambda s:sorted(s.hypernyms()),cut_mark='...'))
     [Synset('dog.n.01'),
      [Synset('canine.n.02'),
       [Synset('carnivore.n.01'),
@@ -529,7 +529,7 @@ def acyclic_branches_depth_first(
     >>> from nltk.util import acyclic_branches_depth_first as tree
     >>> wn=nltk.corpus.wordnet
     >>> from pprint import pprint
-    >>> pprint(tree(wn.synset('certified.a.01'), lambda s:s.also_sees(), cut_mark='...', depth=4))
+    >>> pprint(tree(wn.synset('certified.a.01'), lambda s:sorted(s.also_sees()), cut_mark='...', depth=4))
     [Synset('certified.a.01'),
      [Synset('authorized.a.01'),
       [Synset('lawful.a.01'),
@@ -612,7 +612,7 @@ def unweighted_minimum_spanning_dict(tree, children=iter):
     >>> from nltk.corpus import wordnet as wn
     >>> from nltk.util import unweighted_minimum_spanning_dict as umsd
     >>> from pprint import pprint
-    >>> pprint(umsd(wn.synset('bound.a.01'), lambda s:s.also_sees()))
+    >>> pprint(umsd(wn.synset('bound.a.01'), lambda s:sorted(s.also_sees())))
     {Synset('bound.a.01'): [Synset('unfree.a.02')],
      Synset('classified.a.02'): [],
      Synset('confined.a.02'): [],
@@ -657,7 +657,7 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
     >>> from nltk.util import unweighted_minimum_spanning_tree as mst
     >>> wn=nltk.corpus.wordnet
     >>> from pprint import pprint
-    >>> pprint(mst(wn.synset('bound.a.01'), lambda s:s.also_sees()))
+    >>> pprint(mst(wn.synset('bound.a.01'), lambda s:sorted(s.also_sees())))
     [Synset('bound.a.01'),
      [Synset('unfree.a.02'),
       [Synset('confined.a.02')],

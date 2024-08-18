@@ -1,6 +1,6 @@
 # Natural Language Toolkit: ALINE
 #
-# Copyright (C) 2001-2023 NLTK Project
+# Copyright (C) 2001-2024 NLTK Project
 # Author: Greg Kondrak <gkondrak@ualberta.ca>
 #         Geoff Bacon <bacon@berkeley.edu> (Python port)
 # URL: <https://www.nltk.org/>
@@ -1353,6 +1353,7 @@ okimawa,okemaw
 ahkohkwa,ahkɛh
 pematesiweni,pematesewen
 asenja,aʔsɛn"""
+
 
 if __name__ == "__main__":
     demo()

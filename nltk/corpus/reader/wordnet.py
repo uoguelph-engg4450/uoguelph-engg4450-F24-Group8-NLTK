@@ -1,6 +1,6 @@
 # Natural Language Toolkit: WordNet
 #
-# Copyright (C) 2001-2023 NLTK Project
+# Copyright (C) 2001-2024 NLTK Project
 # Author: Steven Bethard <Steven.Bethard@colorado.edu>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
@@ -588,7 +588,7 @@ class Synset(_WordNetObject):
         (from 'animal.n.01' to 'entity.n.01'):
 
         >>> dog = wn.synset('dog.n.01')
-        >>> hyp = lambda s:s.hypernyms()
+        >>> hyp = lambda s:sorted(s.hypernyms())
         >>> print(list(dog.closure(hyp)))
         [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'),\
  Synset('animal.n.01'), Synset('placental.n.01'), Synset('organism.n.01'),\
@@ -619,7 +619,7 @@ class Synset(_WordNetObject):
         >>> from nltk.corpus import wordnet as wn
         >>> from pprint import pprint
         >>> computer = wn.synset('computer.n.01')
-        >>> topic = lambda s:s.topic_domains()
+        >>> topic = lambda s:sorted(s.topic_domains())
         >>> pprint(computer.tree(topic))
         [Synset('computer.n.01'), [Synset('computer_science.n.01')]]
 
@@ -629,7 +629,7 @@ class Synset(_WordNetObject):
         But keep duplicate branches (from 'animal.n.01' to 'entity.n.01'):
 
         >>> dog = wn.synset('dog.n.01')
-        >>> hyp = lambda s:s.hypernyms()
+        >>> hyp = lambda s:sorted(s.hypernyms())
         >>> pprint(dog.tree(hyp))
         [Synset('dog.n.01'),
          [Synset('canine.n.02'),
@@ -1094,14 +1094,12 @@ class Synset(_WordNetObject):
     def __repr__(self):
         return f"{type(self).__name__}('{self._name}')"
 
-    def _related(self, relation_symbol, sort=True):
+    def _related(self, relation_symbol):
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
         if relation_symbol not in self._pointers:
             return []
         pointer_tuples = self._pointers[relation_symbol]
         r = [get_synset(pos, offset) for pos, offset in pointer_tuples]
-        if sort:
-            r.sort()
         return r
 
 

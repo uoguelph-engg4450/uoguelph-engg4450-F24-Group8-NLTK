@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the Stanford Parser
 #
-# Copyright (C) 2001-2023 NLTK Project
+# Copyright (C) 2001-2024 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <https://www.nltk.org/>
@@ -338,7 +338,6 @@ class StanfordParser(GenericStanfordParser):
 
 
 class StanfordDependencyParser(GenericStanfordParser):
-
     """
     >>> dep_parser=StanfordDependencyParser(
     ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"

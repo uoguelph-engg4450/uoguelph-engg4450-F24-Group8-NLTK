@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Framenet Corpus Reader
 #
-# Copyright (C) 2001-2023 NLTK Project
+# Copyright (C) 2001-2024 NLTK Project
 # Authors: Chuck Wooters <wooters@icsi.berkeley.edu>,
 #          Nathan Schneider <nathan.schneider@georgetown.edu>
 # URL: <https://www.nltk.org/>
@@ -753,12 +753,10 @@ def _pretty_frame(frame):
 
 
 class FramenetError(Exception):
-
     """An exception class for framenet-related errors."""
 
 
 class AttrDict(dict):
-
     """A class that wraps a dict and allows accessing the keys of the
     dict as if they were attributes. Taken from here:
     https://stackoverflow.com/a/14620633/8879
@@ -1248,9 +1246,9 @@ warnings(True) to display corpus consistency warnings when loading data
             self.abspath("luIndex.xml"), "luIndex/lu", self._handle_elt
         ) as view:
             for lu in view:
-                self._lu_idx[
-                    lu["ID"]
-                ] = lu  # populate with LU index entries. if any of these
+                self._lu_idx[lu["ID"]] = (
+                    lu  # populate with LU index entries. if any of these
+                )
                 # are looked up they will be replaced by full LU objects.
 
     def _buildrelationindex(self):
