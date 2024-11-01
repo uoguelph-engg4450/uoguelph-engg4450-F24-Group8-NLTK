@@ -405,9 +405,14 @@ wordnet2021: WordNetCorpusReader = LazyCorpusLoader(
     WordNetCorpusReader,
     LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
-# Latest Open English Wordnet:
 wordnet2022: WordNetCorpusReader = LazyCorpusLoader(
     "wordnet2022",
+    WordNetCorpusReader,
+    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+)
+# Latest Open English Wordnet:
+english_wordnet: WordNetCorpusReader = LazyCorpusLoader(
+    "english_wordnet",
     WordNetCorpusReader,
     LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
