@@ -303,6 +303,7 @@
 - Ron Urbach <https://github.com/sharpblade4>
 - Vivek Kalyan <https://github.com/vivekkalyan>
 - Tom Strange https://github.com/strangetom
+- Vincent Peth <https://github.com/ShadokDuBas>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
