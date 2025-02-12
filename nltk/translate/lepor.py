@@ -64,7 +64,6 @@ def alignment(ref_tokens: List[str], hyp_tokens: List[str]):
     ref_len = len(ref_tokens)
 
     for hyp_index, hyp_token in enumerate(hyp_tokens):
-
         # If no match.
         if ref_tokens.count(hyp_token) == 0:
             alignments.append(-1)
