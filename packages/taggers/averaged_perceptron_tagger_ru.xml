@@ -2,5 +2,7 @@
          name='Averaged Perceptron Tagger (Russian)'
          webpage='http://www.ruscorpora.ru/en/'
          languages="Russian"
+         license="MIT License"
+         webpage="https://github.com/sloria/textblob-aptagger"
          unzip="1"
          />
