@@ -168,7 +168,7 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
 #       override the `sent_tokenizer`.
 class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReader):
     def __init__(self, *args, **kwargs):
-        CategorizedCorpusReader.__init__(self, kwargs)
+        CategorizedPlaintextCorpusReader.__init__(self, *args, **kwargs)
         kwargs["sent_tokenizer"] = PunktTokenizer("portuguese")
 
 
