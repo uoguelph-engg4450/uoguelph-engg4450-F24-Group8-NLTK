@@ -164,6 +164,16 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
 
 
 class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReader):
+    """
+    This class is identical with CategorizedPlaintextCorpusReader,
+    except that it initializes a Portuguese PunktTokenizer:
+
+    >>> from nltk.corpus import machado
+    >>> print(machado._sent_tokenizer._lang)
+    portuguese
+
+    """
+
     def __init__(self, *args, **kwargs):
         CategorizedPlaintextCorpusReader.__init__(self, *args, **kwargs)
         # Fixed (@ekaf 2025), new way to invoke Punkt:
