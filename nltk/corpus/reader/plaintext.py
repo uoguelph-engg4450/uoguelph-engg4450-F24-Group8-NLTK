@@ -163,13 +163,11 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
         PlaintextCorpusReader.__init__(self, *args, **kwargs)
 
 
-# FIXME: Is there a better way? How to not hardcode this?
-#       Possibly, add a language kwargs to CategorizedPlaintextCorpusReader to
-#       override the `sent_tokenizer`.
 class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReader):
     def __init__(self, *args, **kwargs):
         CategorizedPlaintextCorpusReader.__init__(self, *args, **kwargs)
-        kwargs["sent_tokenizer"] = PunktTokenizer("portuguese")
+        # Fixed (@ekaf 2025), new way to invoke Punkt:
+        self._sent_tokenizer = PunktTokenizer("portuguese")
 
 
 class EuroparlCorpusReader(PlaintextCorpusReader):
