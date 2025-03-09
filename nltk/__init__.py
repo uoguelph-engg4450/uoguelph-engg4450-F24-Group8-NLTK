@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2024 NLTK Project
+# Copyright (C) 2001-2025 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 #          Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -19,6 +19,7 @@ isort:skip_file
 """
 
 import os
+import importlib
 
 # //////////////////////////////////////////////////////
 # Metadata
@@ -42,7 +43,7 @@ if __doc__ is not None:  # fix for the ``python -OO``
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2024 NLTK Project.
+Copyright (C) 2001-2025 NLTK Project.
 
 Distributed and Licensed under the Apache License, Version 2.0,
 which is included by reference.
@@ -169,7 +170,6 @@ draw = lazyimport.LazyModule("draw", locals(), globals())
 toolbox = lazyimport.LazyModule("toolbox", locals(), globals())
 
 # Optional loading
-
 try:
     import numpy
 except ImportError:
@@ -179,11 +179,10 @@ else:
 
 from nltk.downloader import download, download_shell
 
-try:
-    import tkinter
-except ImportError:
-    pass
-else:
+# Check if tkinter exists without importing it to avoid crashes after
+# forks on macOS. Only nltk.app, nltk.draw, and demo modules should
+# have top-level tkinter imports. See #2949 for more details.
+if importlib.util.find_spec("tkinter"):
     try:
         from nltk.downloader import download_gui
     except RuntimeError as e:
