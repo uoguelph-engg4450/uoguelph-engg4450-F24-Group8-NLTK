@@ -18,6 +18,7 @@
   <item ref="crubadan" />
   <item ref="dependency_treebank" />
   <item ref="dolch" />
+  <item ref="english_wordnet" />
   <item ref="europarl_raw" />
   <item ref="extended_omw" />
   <item ref="floresta" />
