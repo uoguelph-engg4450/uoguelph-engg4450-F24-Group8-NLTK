@@ -395,6 +395,14 @@ wordnet: WordNetCorpusReader = LazyCorpusLoader(
     WordNetCorpusReader,
     LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
+## Use the following template to add a custom Wordnet package.
+## Just uncomment, and replace the identifier (my_wordnet) in two places:
+##
+# my_wordnet: WordNetCorpusReader = LazyCorpusLoader(
+#    "my_wordnet",
+#    WordNetCorpusReader,
+#    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+# )
 wordnet31: WordNetCorpusReader = LazyCorpusLoader(
     "wordnet31",
     WordNetCorpusReader,
