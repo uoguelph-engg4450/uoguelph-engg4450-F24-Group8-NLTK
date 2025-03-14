@@ -824,7 +824,15 @@ Normally, only small edits are necessary for NLTK to load any
 Wordnet in the original Princeton WordNet wndb format. This could
 for ex. be a Princeton WordNet from the 1.x or 2.x series, which
 were never included in NLTK, or any Open English Wordnet version.
-However, some older versions have problems that require more effort.
+This process has been tested and works with all PWN versions since
+WN 1.5SC (from 1995), which was the first version to use sense keys.
+
+However, three of these older versions have problems that require
+more effort. Two versions (1.5SC and 2.1) miss a copy of the
+'lexnames' file, which has been the same for all modern PWN releases,
+and needs to be copied manually from any other version.
+PWN v. 2.0 is the most difficult to deal with, since some pointer_counts
+in the index.POS files are off-by-one.
 
 Let's illustrate the process with Edition 2023 of the Open English
 Wordnet, since nltk_data does not include it.
