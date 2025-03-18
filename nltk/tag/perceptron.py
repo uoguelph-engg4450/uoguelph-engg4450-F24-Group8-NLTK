@@ -15,6 +15,7 @@ from collections import defaultdict
 from os.path import join as path_join
 from tempfile import gettempdir
 
+from nltk import jsontags
 from nltk.data import find, load
 from nltk.tag.api import TaggerI
 
@@ -39,12 +40,15 @@ def lang_jsons(lang="eng"):
 TAGGER_JSONS = {lang: lang_jsons(lang) for lang in ["eng", "rus", "xxx"]}
 
 
+@jsontags.register_tag
 class AveragedPerceptron:
     """An averaged perceptron, as implemented by Matthew Honnibal.
 
     See more implementation details here:
         https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
     """
+
+    json_tag = "nltk.tag.perceptron.AveragedPerceptron"
 
     def __init__(self, weights=None):
         # Each feature gets its own weight vector, so weights is a dict-of-dicts
@@ -122,7 +126,15 @@ class AveragedPerceptron:
         with open(path) as fin:
             self.weights = json.load(fin)
 
+    def encode_json_obj(self):
+        return self.weights
 
+    @classmethod
+    def decode_json_obj(cls, obj):
+        return cls(obj)
+
+
+@jsontags.register_tag
 class PerceptronTagger(TaggerI):
     """
     Greedy Averaged Perceptron tagger, as implemented by Matthew Honnibal.
@@ -151,6 +163,8 @@ class PerceptronTagger(TaggerI):
     >>> pretrain.tag("The red cat".split())
     [('The', 'DT'), ('red', 'JJ'), ('cat', 'NN')]
     """
+
+    json_tag = "nltk.tag.perceptron.PerceptronTagger"
 
     START = ["-START-", "-START2-"]
     END = ["-END-", "-END2-"]
@@ -257,7 +271,7 @@ class PerceptronTagger(TaggerI):
         with open(path_join(loc, jsons["tagdict"]), "w") as fout:
             json.dump(self.tagdict, fout)
         with open(path_join(loc, jsons["classes"]), "w") as fout:
-            json.dump(list(self.model.classes), fout)
+            json.dump(list(self.classes), fout)
 
     def load_from_json(self, lang="eng", loc=None):
         # Automatically find path to the tagger if location is not specified.
@@ -269,7 +283,19 @@ class PerceptronTagger(TaggerI):
         with open(loc + jsons["tagdict"]) as fin:
             self.tagdict = json.load(fin)
         with open(loc + jsons["classes"]) as fin:
-            self.model.classes = set(json.load(fin))
+            self.classes = set(json.load(fin))
+            self.model.classes = self.classes
+
+    def encode_json_obj(self):
+        return self.model.weights, self.tagdict, list(self.classes)
+
+    @classmethod
+    def decode_json_obj(cls, obj):
+        tagger = cls(load=False)
+        tagger.model.weights, tagger.tagdict, tagger.classes = obj
+        tagger.classes = set(tagger.classes)
+        tagger.model.classes = tagger.classes
+        return tagger
 
     def normalize(self, word):
         """
