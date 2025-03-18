@@ -276,13 +276,13 @@ class PerceptronTagger(TaggerI):
     def load_from_json(self, lang="eng", loc=None):
         # Automatically find path to the tagger if location is not specified.
         if not loc:
-            loc = find(f"taggers/averaged_perceptron_tagger_{lang}/")
+            loc = find(f"taggers/averaged_perceptron_tagger_{lang}")
         jsons = lang_jsons(lang)
-        with open(loc + jsons["weights"]) as fin:
+        with open(path_join(loc, jsons["weights"])) as fin:
             self.model.weights = json.load(fin)
-        with open(loc + jsons["tagdict"]) as fin:
+        with open(path_join(loc, jsons["tagdict"])) as fin:
             self.tagdict = json.load(fin)
-        with open(loc + jsons["classes"]) as fin:
+        with open(path_join(loc, jsons["classes"])) as fin:
             self.classes = set(json.load(fin))
             self.model.classes = self.classes
 
