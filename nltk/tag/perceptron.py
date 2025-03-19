@@ -142,15 +142,23 @@ class PerceptronTagger(TaggerI):
     https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
 
     >>> from nltk.tag.perceptron import PerceptronTagger
-
-    Train the model
-
     >>> tagger = PerceptronTagger(load=False)
+
+    Train and save the model:
 
     >>> tagger.train([[('today','NN'),('is','VBZ'),('good','JJ'),('day','NN')],
     ... [('yes','NNS'),('it','PRP'),('beautiful','JJ')]], save_loc=tagger.save_dir)
 
-    >>> tagger.tag(['today','is','a','beautiful','day'])
+    Load the saved model:
+
+    >>> tagger2 = PerceptronTagger(loc=tagger.save_dir)
+    >>> print(sorted(list(tagger2.classes)))
+    ['JJ', 'NN', 'NNS', 'PRP', 'VBZ']
+
+    >>> print(tagger2.classes == tagger.classes)
+    True
+
+    >>> tagger2.tag(['today','is','a','beautiful','day'])
     [('today', 'NN'), ('is', 'PRP'), ('a', 'PRP'), ('beautiful', 'JJ'), ('day', 'NN')]
 
     Use the pretrain model (the default constructor)
@@ -169,7 +177,7 @@ class PerceptronTagger(TaggerI):
     START = ["-START-", "-START2-"]
     END = ["-END-", "-END2-"]
 
-    def __init__(self, load=True, lang="eng"):
+    def __init__(self, load=True, lang="eng", loc=None):
         """
         :param load: Load the json model upon instantiation.
         """
@@ -179,7 +187,7 @@ class PerceptronTagger(TaggerI):
         self.lang = lang
         self.save_dir = path_join(TRAINED_TAGGER_PATH, f"{TAGGER_NAME}_{self.lang}")
         if load:
-            self.load_from_json(lang)
+            self.load_from_json(lang, loc)
 
     def tag(self, tokens, return_conf=False, use_tagdict=True):
         """
