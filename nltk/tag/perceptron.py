@@ -24,20 +24,8 @@ try:
 except ImportError:
     pass
 
-# Save trained models in tmp directory by default:
-TRAINED_TAGGER_PATH = gettempdir()
 
-TAGGER_NAME = "averaged_perceptron_tagger"
-
-
-def lang_jsons(lang="eng"):
-    return {
-        attr: f"{TAGGER_NAME}_{lang}.{attr}.json"
-        for attr in ["weights", "tagdict", "classes"]
-    }
-
-
-TAGGER_JSONS = {lang: lang_jsons(lang) for lang in ["eng", "rus", "xxx"]}
+# TAGGER_JSONS = {lang: lang_json(lang) for lang in ["eng", "rus", "xxx"]}
 
 
 @jsontags.register_tag
@@ -185,9 +173,20 @@ class PerceptronTagger(TaggerI):
         self.tagdict = {}
         self.classes = set()
         self.lang = lang
-        self.save_dir = path_join(TRAINED_TAGGER_PATH, f"{TAGGER_NAME}_{self.lang}")
+        # Save trained models in tmp directory by default:
+        self.TRAINED_TAGGER_PATH = gettempdir()
+        self.TAGGER_NAME = "averaged_perceptron_tagger"
+        self.save_dir = path_join(
+            self.TRAINED_TAGGER_PATH, f"{self.TAGGER_NAME}_{self.lang}"
+        )
         if load:
             self.load_from_json(lang, loc)
+
+    def lang_jsons(self, lang="eng"):
+        return {
+            attr: f"{self.TAGGER_NAME}_{lang}.{attr}.json"
+            for attr in ["weights", "tagdict", "classes"]
+        }
 
     def tag(self, tokens, return_conf=False, use_tagdict=True):
         """
@@ -272,7 +271,7 @@ class PerceptronTagger(TaggerI):
         if not isdir(loc):
             mkdir(loc)
 
-        jsons = lang_jsons(lang)
+        jsons = self.lang_jsons(lang)
 
         with open(path_join(loc, jsons["weights"]), "w") as fout:
             json.dump(self.model.weights, fout)
@@ -285,7 +284,7 @@ class PerceptronTagger(TaggerI):
         # Automatically find path to the tagger if location is not specified.
         if not loc:
             loc = find(f"taggers/averaged_perceptron_tagger_{lang}")
-        jsons = lang_jsons(lang)
+        jsons = self.lang_jsons(lang)
         with open(path_join(loc, jsons["weights"])) as fin:
             self.model.weights = json.load(fin)
         with open(path_join(loc, jsons["tagdict"])) as fin:
@@ -376,40 +375,24 @@ def _pc(n, d):
     return (n / d) * 100
 
 
-def _load_data_conll_format(filename):
-    print("Read from file: ", filename)
-    with open(filename, "rb") as fin:
-        sentences = []
-        sentence = []
-        for line in fin.readlines():
-            line = line.strip()
-            # print line
-            if len(line) == 0:
-                sentences.append(sentence)
-                sentence = []
-                continue
-            tokens = line.split("\t")
-            word = tokens[1]
-            tag = tokens[4]
-            sentence.append((word, tag))
-        return sentences
+def _train_and_test(lang="sv"):
+    """
+    Train and test on 'lang' part of universal_treebanks corpus, which includes
+    train and test sets in conll format for 'de', 'es', 'fi', 'fr' and 'sv'.
+    Finds 0.94 accuracy on 'sv' (Swedish) test set.
+    """
+    from nltk.corpus import universal_treebanks as utb
 
-
-# Let's not give the impression that this is directly usable:
-#
-# def _get_pretrain_model():
-#     # Train and test on English part of ConLL data (WSJ part of Penn Treebank)
-#     # Train: section 2-11
-#     # Test : section 23
-#     tagger = PerceptronTagger()
-#     training = _load_data_conll_format("english_ptb_train.conll")
-#     testing = _load_data_conll_format("english_ptb_test.conll")
-#     print("Size of training and testing (sentence)", len(training), len(testing))
-#     # Train and save the model
-#     tagger.train(training, save_loc=tagger.save_dir)
-#     print("Accuracy : ", tagger.accuracy(testing))
+    tagger = PerceptronTagger(load=False, lang=lang)
+    training = utb.tagged_sents(f"ch/{lang}/{lang}-universal-ch-train.conll")
+    testing = utb.tagged_sents(f"ch/{lang}/{lang}-universal-ch-test.conll")
+    print(
+        f"(Lang = {lang}) training on {len(training)} and testing on {len(testing)} sentences"
+    )
+    # Train and save the model
+    tagger.train(training, save_loc=tagger.save_dir)
+    print("Accuracy : ", tagger.accuracy(testing))
 
 
 if __name__ == "__main__":
-    # _get_pretrain_model()
-    pass
+    _train_and_test()
