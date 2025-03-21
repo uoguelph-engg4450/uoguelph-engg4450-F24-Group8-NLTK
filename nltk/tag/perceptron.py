@@ -25,9 +25,6 @@ except ImportError:
     pass
 
 
-# TAGGER_JSONS = {lang: lang_json(lang) for lang in ["eng", "rus", "xxx"]}
-
-
 @jsontags.register_tag
 class AveragedPerceptron:
     """An averaged perceptron, as implemented by Matthew Honnibal.
@@ -182,11 +179,11 @@ class PerceptronTagger(TaggerI):
         if load:
             self.load_from_json(lang, loc)
 
-    def lang_jsons(self, lang="eng"):
-        return {
-            attr: f"{self.TAGGER_NAME}_{lang}.{attr}.json"
+    def param_files(self, lang="eng"):
+        return (
+            f"{self.TAGGER_NAME}_{lang}.{attr}.json"
             for attr in ["weights", "tagdict", "classes"]
-        }
+        )
 
     def tag(self, tokens, return_conf=False, use_tagdict=True):
         """
@@ -267,31 +264,31 @@ class PerceptronTagger(TaggerI):
 
         if not loc:
             loc = self.save_dir
-
         if not isdir(loc):
             mkdir(loc)
 
-        jsons = self.lang_jsons(lang)
-
-        with open(path_join(loc, jsons["weights"]), "w") as fout:
-            json.dump(self.model.weights, fout)
-        with open(path_join(loc, jsons["tagdict"]), "w") as fout:
-            json.dump(self.tagdict, fout)
-        with open(path_join(loc, jsons["classes"]), "w") as fout:
-            json.dump(list(self.classes), fout)
+        for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
+            with open(path_join(loc, json_file), "w") as fout:
+                json.dump(param, fout)
 
     def load_from_json(self, lang="eng", loc=None):
         # Automatically find path to the tagger if location is not specified.
         if not loc:
             loc = find(f"taggers/averaged_perceptron_tagger_{lang}")
-        jsons = self.lang_jsons(lang)
-        with open(path_join(loc, jsons["weights"])) as fin:
-            self.model.weights = json.load(fin)
-        with open(path_join(loc, jsons["tagdict"])) as fin:
-            self.tagdict = json.load(fin)
-        with open(path_join(loc, jsons["classes"])) as fin:
-            self.classes = set(json.load(fin))
-            self.model.classes = self.classes
+
+        def load_param(json_file):
+            with open(path_join(loc, json_file)) as fin:
+                return json.load(fin)
+
+        self.decode_json_params(
+            load_param(js_file) for js_file in self.param_files(lang)
+        )
+
+    def decode_json_params(self, params):
+        weights, tagdict, class_list = params
+        self.model.weights = weights
+        self.tagdict = tagdict
+        self.classes = self.model.classes = set(class_list)
 
     def encode_json_obj(self):
         return self.model.weights, self.tagdict, list(self.classes)
@@ -299,9 +296,7 @@ class PerceptronTagger(TaggerI):
     @classmethod
     def decode_json_obj(cls, obj):
         tagger = cls(load=False)
-        tagger.model.weights, tagger.tagdict, tagger.classes = obj
-        tagger.classes = set(tagger.classes)
-        tagger.model.classes = tagger.classes
+        tagger.decode_json_params(obj)
         return tagger
 
     def normalize(self, word):
