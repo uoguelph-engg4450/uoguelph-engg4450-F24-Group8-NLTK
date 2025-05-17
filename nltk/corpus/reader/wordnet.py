@@ -72,7 +72,7 @@ ADJ, ADJ_SAT, ADV, NOUN, VERB = "a", "s", "r", "n", "v"
 POS_LIST = [NOUN, VERB, ADJ, ADV]
 
 # Convert from Universal Tags (Petrov et al., 2012) to Wordnet Pos
-UTAG2WN_POS = {"NOUN": "n", "VERB": "v", "ADJ": "a", "ADV": "r"}
+UNIVERSAL_TAG_TO_WN_POS = {"NOUN": "n", "VERB": "v", "ADJ": "a", "ADV": "r"}
 
 # A table of strings that are used to express verb frames.
 VERB_FRAME_STRINGS = (
@@ -2140,7 +2140,7 @@ class WordNetCorpusReader(CorpusReader):
             [('Banks', 'NNS', 'n'), ('check', 'VBP', 'v'), ('books', 'NNS', 'n'), ('.', '.', None)]
         """
 
-        return UTAG2WN_POS.get(map_tag(tagset, "universal", tag), None)
+        return UNIVERSAL_TAG_TO_WN_POS.get(map_tag(tagset, "universal", tag), None)
 
     #############################################################
     # Create information content from corpus
