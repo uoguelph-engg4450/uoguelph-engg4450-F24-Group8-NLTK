@@ -2120,6 +2120,12 @@ class WordNetCorpusReader(CorpusReader):
         Args:
             tag (str): The part-of-speech tag to convert.
             tagset (str): The tagset of the input tag. Defaults to "en-ptb".
+                Supported tagsets are those recognized by the `map_tag` function
+                from `nltk.tag`. Common examples include:
+                    - "en-ptb" (Penn Treebank tagset for English)
+                    - "universal" (Universal POS tagset)
+                For a complete list of supported tagsets, refer to the `map_tag`
+                documentation or its source code in the NLTK library.
 
         Returns:
             The corresponding WordNet POS tag ('n', 'v', 'a', 'r') or None
