@@ -70,6 +70,9 @@ ADJ, ADJ_SAT, ADV, NOUN, VERB = "a", "s", "r", "n", "v"
 
 POS_LIST = [NOUN, VERB, ADJ, ADV]
 
+# Convert from Universal Tags (Petrov et al., 2012) to Wordnet Pos
+UTAG2WN_POS = {"NOUN": "n", "VERB": "v", "ADJ": "a", "ADV": "r"}
+
 # A table of strings that are used to express verb frames.
 VERB_FRAME_STRINGS = (
     None,
@@ -2108,7 +2111,7 @@ class WordNetCorpusReader(CorpusReader):
         # 2. Return all that are in the database (and check the original too)
         return filter_forms([form] + forms)
 
-    def tag2pos(self, tag, tagset="en-ptb") -> Optional[str]:
+    def tag2pos(self, tag, tagset="en-ptb"):
         """
         Convert a tag from one of the tagsets in nltk_data/taggers/universal_tagset to a
         WordNet Part-of-Speech, using Universal Tags (Petrov et al., 2012) as intermediary.
@@ -2119,7 +2122,7 @@ class WordNetCorpusReader(CorpusReader):
             tagset (str): The tagset of the input tag. Defaults to "en-ptb".
 
         Returns:
-            Optional[str]: The corresponding WordNet POS tag ('n', 'v', 'a', 'r') or None
+            The corresponding WordNet POS tag ('n', 'v', 'a', 'r') or None
             if the tag cannot be mapped to a WordNet POS.
 
         Example:
