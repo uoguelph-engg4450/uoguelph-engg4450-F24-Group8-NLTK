@@ -2122,8 +2122,7 @@ class WordNetCorpusReader(CorpusReader):
 
         from nltk.tag import map_tag
 
-        utag2wnpos = {'NOUN': 'n', 'VERB': 'v', 'ADJ': 'a', 'ADV': 'r'}
-        return utag2wnpos.get(map_tag(tagset, "universal", tag), None)
+        return UTAG2WN_POS.get(map_tag(tagset, "universal", tag), None)
 
     #############################################################
     # Create information content from corpus
