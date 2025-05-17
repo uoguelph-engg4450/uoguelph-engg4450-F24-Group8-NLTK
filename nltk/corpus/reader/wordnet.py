@@ -42,6 +42,7 @@ from operator import itemgetter
 from nltk.corpus.reader import CorpusReader
 from nltk.internals import deprecated
 from nltk.probability import FreqDist
+from nltk.tag import map_tag
 from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
@@ -2123,7 +2124,7 @@ class WordNetCorpusReader(CorpusReader):
                 Supported tagsets are those recognized by the `map_tag` function
                 from `nltk.tag`. Common examples include:
                     - "en-ptb" (Penn Treebank tagset for English)
-                    - "universal" (Universal POS tagset)
+                    - "en-brown" (Brown tagset)
                 For a complete list of supported tagsets, refer to the `map_tag`
                 documentation or its source code in the NLTK library.
 
@@ -2137,8 +2138,6 @@ class WordNetCorpusReader(CorpusReader):
             >>> print([(word, tag, nltk.corpus.wordnet.tag2pos(tag)) for word, tag in tagged])
             [('Banks', 'NNS', 'n'), ('check', 'VBP', 'v'), ('books', 'NNS', 'n'), ('.', '.', None)]
         """
-
-        from nltk.tag import map_tag
 
         return UTAG2WN_POS.get(map_tag(tagset, "universal", tag), None)
 
