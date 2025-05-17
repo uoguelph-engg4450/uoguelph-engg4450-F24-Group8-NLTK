@@ -2118,19 +2118,20 @@ class WordNetCorpusReader(CorpusReader):
         WordNet Part-of-Speech, using Universal Tags (Petrov et al., 2012) as intermediary.
         Return None when WordNet does not cover that POS.
 
-        Args:
-            tag (str): The part-of-speech tag to convert.
-            tagset (str): The tagset of the input tag. Defaults to "en-ptb".
-                Supported tagsets are those recognized by the `map_tag` function
-                from `nltk.tag`. Common examples include:
-                    - "en-ptb" (Penn Treebank tagset for English)
-                    - "en-brown" (Brown tagset)
-                For a complete list of supported tagsets, refer to the `map_tag`
-                documentation or its source code in the NLTK library.
+        :param tag: The part-of-speech tag to convert.
+        :type tag: str
+        :param tagset: The tagset of the input tag. Defaults to "en-ptb".
+            Supported tagsets are those recognized by the `map_tag` function
+            from `nltk.tag`. Common examples include:
+                - "en-ptb" (Penn Treebank tagset for English)
+                - "en-brown" (Brown tagset)
+            For a complete list of supported tagsets, refer to the `map_tag`
+            documentation or its source code in the NLTK library.
+        :type tagset: str
 
-        Returns:
-            The corresponding WordNet POS tag ('n', 'v', 'a', 'r') or None
+        :returns: The corresponding WordNet POS tag ('n', 'v', 'a', 'r') or None
             if the tag cannot be mapped to a WordNet POS.
+        :rtype: str or None
 
         Example:
             >>> import nltk
