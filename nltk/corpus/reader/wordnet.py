@@ -2108,6 +2108,23 @@ class WordNetCorpusReader(CorpusReader):
         # 2. Return all that are in the database (and check the original too)
         return filter_forms([form] + forms)
 
+    def tag2pos(self, tag, tagset="en-ptb") -> str:
+        """
+        Convert a tag from one of the tagsets in nltk_data/taggers/universal_tagset, to a
+        WordNet Part-of-Speech, using Universal Tags (Petrov et al., 2012) as intermediary.
+        Return None when WordNet does not cover that Pos.
+
+        >>> import nltk
+        >>> tagged = nltk.tag.pos_tag(nltk.tokenize.word_tokenize("Banks check books."))
+        >>> print([(word, tag, nltk.corpus.wordnet.tag2pos(tag)) for word,tag in tagged])
+        [('Banks', 'NNS', 'n'), ('check', 'VBP', 'v'), ('books', 'NNS', 'n'), ('.', '.', None)]
+        """
+
+        from nltk.tag import map_tag
+
+        utag2wnpos = {self._FILEMAP[pos].upper(): pos for pos in self._FILEMAP}
+        return utag2wnpos.get(map_tag(tagset, "universal", tag), None)
+
     #############################################################
     # Create information content from corpus
     #############################################################
