@@ -2122,7 +2122,7 @@ class WordNetCorpusReader(CorpusReader):
 
         from nltk.tag import map_tag
 
-        utag2wnpos = {self._FILEMAP[pos].upper(): pos for pos in self._FILEMAP}
+        utag2wnpos = {'NOUN': 'n', 'VERB': 'v', 'ADJ': 'a', 'ADV': 'r'}
         return utag2wnpos.get(map_tag(tagset, "universal", tag), None)
 
     #############################################################
