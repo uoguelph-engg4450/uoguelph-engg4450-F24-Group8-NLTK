@@ -2110,14 +2110,23 @@ class WordNetCorpusReader(CorpusReader):
 
     def tag2pos(self, tag, tagset="en-ptb") -> Optional[str]:
         """
-        Convert a tag from one of the tagsets in nltk_data/taggers/universal_tagset, to a
+        Convert a tag from one of the tagsets in nltk_data/taggers/universal_tagset to a
         WordNet Part-of-Speech, using Universal Tags (Petrov et al., 2012) as intermediary.
-        Return None when WordNet does not cover that Pos.
+        Return None when WordNet does not cover that POS.
 
-        >>> import nltk
-        >>> tagged = nltk.tag.pos_tag(nltk.tokenize.word_tokenize("Banks check books."))
-        >>> print([(word, tag, nltk.corpus.wordnet.tag2pos(tag)) for word,tag in tagged])
-        [('Banks', 'NNS', 'n'), ('check', 'VBP', 'v'), ('books', 'NNS', 'n'), ('.', '.', None)]
+        Args:
+            tag (str): The part-of-speech tag to convert.
+            tagset (str): The tagset of the input tag. Defaults to "en-ptb".
+
+        Returns:
+            Optional[str]: The corresponding WordNet POS tag ('n', 'v', 'a', 'r') or None
+            if the tag cannot be mapped to a WordNet POS.
+
+        Example:
+            >>> import nltk
+            >>> tagged = nltk.tag.pos_tag(nltk.tokenize.word_tokenize("Banks check books."))
+            >>> print([(word, tag, nltk.corpus.wordnet.tag2pos(tag)) for word, tag in tagged])
+            [('Banks', 'NNS', 'n'), ('check', 'VBP', 'v'), ('books', 'NNS', 'n'), ('.', '.', None)]
         """
 
         from nltk.tag import map_tag
