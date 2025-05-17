@@ -244,3 +244,21 @@ class WordnNetDemo(unittest.TestCase):
         self.assertTrue(hasattr(cat_lemmas, "__iter__"))
         self.assertTrue(hasattr(cat_lemmas, "__next__") or hasattr(eng_lemmas, "next"))
         self.assertTrue(cat_lemmas.__iter__() is cat_lemmas)
+
+    def test_en_ptb_tags(self):
+        # Penn Treebank tags
+        self.assertEqual(wn.tag2pos("NN"), "n")  # noun
+        self.assertEqual(wn.tag2pos("NNS"), "n")
+        self.assertEqual(wn.tag2pos("VB"), "v")  # verb
+        self.assertEqual(wn.tag2pos("VBD"), "v")
+        self.assertEqual(wn.tag2pos("JJ"), "a")  # adjective
+        self.assertEqual(wn.tag2pos("RB"), "r")  # adverb
+        self.assertIsNone(wn.tag2pos("."))  # punctuation
+
+    def test_en_brown_tags(self):
+        # Brown tagset
+        self.assertEqual(wn.tag2pos("NN", tagset="en-brown"), "n")
+        self.assertEqual(wn.tag2pos("VB", tagset="en-brown"), "v")
+        self.assertEqual(wn.tag2pos("JJ", tagset="en-brown"), "a")
+        self.assertEqual(wn.tag2pos("RB", tagset="en-brown"), "r")
+        self.assertIsNone(wn.tag2pos("(", tagset="en-brown"))
