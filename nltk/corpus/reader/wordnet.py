@@ -2108,7 +2108,7 @@ class WordNetCorpusReader(CorpusReader):
         # 2. Return all that are in the database (and check the original too)
         return filter_forms([form] + forms)
 
-    def tag2pos(self, tag, tagset="en-ptb") -> str:
+    def tag2pos(self, tag, tagset="en-ptb") -> Optional[str]:
         """
         Convert a tag from one of the tagsets in nltk_data/taggers/universal_tagset, to a
         WordNet Part-of-Speech, using Universal Tags (Petrov et al., 2012) as intermediary.
