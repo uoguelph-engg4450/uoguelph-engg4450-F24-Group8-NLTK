@@ -252,13 +252,6 @@ class WordnNetDemo(unittest.TestCase):
         self.assertEqual(wn.tag2pos("JJ"), "a")  # adjective
         self.assertEqual(wn.tag2pos("RB"), "r")  # adverb
 
-    def test_en_ptb_tags(self):
-        # Common PTB tags (mapped in both PTB and Brown)
-        self.assertEqual(wn.tag2pos("NN"), "n")  # noun
-        self.assertEqual(wn.tag2pos("VB"), "v")  # verb
-        self.assertEqual(wn.tag2pos("JJ"), "a")  # adjective
-        self.assertEqual(wn.tag2pos("RB"), "r")  # adverb
-
         # PTB-specific tags (mapped in PTB, not in Brown)
         self.assertEqual(wn.tag2pos("NNS"), "n")  # plural noun (PTB only)
         self.assertEqual(wn.tag2pos("VBD"), "v")  # verb, past tense (PTB only)
