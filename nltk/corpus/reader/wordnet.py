@@ -2139,8 +2139,10 @@ class WordNetCorpusReader(CorpusReader):
             >>> print([(word, tag, nltk.corpus.wordnet.tag2pos(tag)) for word, tag in tagged])
             [('Banks', 'NNS', 'n'), ('check', 'VBP', 'v'), ('books', 'NNS', 'n'), ('.', '.', None)]
         """
+        if tagset != "universal":
+            tag = map_tag(tagset, "universal", tag)
 
-        return UNIVERSAL_TAG_TO_WN_POS.get(map_tag(tagset, "universal", tag), None)
+        return UNIVERSAL_TAG_TO_WN_POS.get(tag, None)
 
     #############################################################
     # Create information content from corpus
