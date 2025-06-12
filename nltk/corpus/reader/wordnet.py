@@ -42,6 +42,7 @@ from operator import itemgetter
 from nltk.corpus.reader import CorpusReader
 from nltk.internals import deprecated
 from nltk.probability import FreqDist
+from nltk.tag import map_tag
 from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
@@ -69,6 +70,9 @@ ADJ, ADJ_SAT, ADV, NOUN, VERB = "a", "s", "r", "n", "v"
 # }
 
 POS_LIST = [NOUN, VERB, ADJ, ADV]
+
+# Convert from Universal Tags (Petrov et al., 2012) to Wordnet Pos
+UNIVERSAL_TAG_TO_WN_POS = {"NOUN": "n", "VERB": "v", "ADJ": "a", "ADV": "r"}
 
 # A table of strings that are used to express verb frames.
 VERB_FRAME_STRINGS = (
@@ -2107,6 +2111,38 @@ class WordNetCorpusReader(CorpusReader):
 
         # 2. Return all that are in the database (and check the original too)
         return filter_forms([form] + forms)
+
+    def tag2pos(self, tag, tagset="en-ptb"):
+        """
+        Convert a tag from one of the tagsets in nltk_data/taggers/universal_tagset to a
+        WordNet Part-of-Speech, using Universal Tags (Petrov et al., 2012) as intermediary.
+        Return None when WordNet does not cover that POS.
+
+        :param tag: The part-of-speech tag to convert.
+        :type tag: str
+        :param tagset: The tagset of the input tag. Defaults to "en-ptb".
+            Supported tagsets are those recognized by the `map_tag` function
+            from `nltk.tag`. Common examples include:
+                - "en-ptb" (Penn Treebank tagset for English)
+                - "en-brown" (Brown tagset)
+            For a complete list of supported tagsets, refer to the `map_tag`
+            documentation or its source code in the NLTK library.
+        :type tagset: str
+
+        :returns: The corresponding WordNet POS tag ('n', 'v', 'a', 'r') or None
+            if the tag cannot be mapped to a WordNet POS.
+        :rtype: str or None
+
+        Example:
+            >>> import nltk
+            >>> tagged = nltk.tag.pos_tag(nltk.tokenize.word_tokenize("Banks check books."))
+            >>> print([(word, tag, nltk.corpus.wordnet.tag2pos(tag)) for word, tag in tagged])
+            [('Banks', 'NNS', 'n'), ('check', 'VBP', 'v'), ('books', 'NNS', 'n'), ('.', '.', None)]
+        """
+        if tagset != "universal":
+            tag = map_tag(tagset, "universal", tag)
+
+        return UNIVERSAL_TAG_TO_WN_POS.get(tag, None)
 
     #############################################################
     # Create information content from corpus
