@@ -5,6 +5,13 @@ Hi! Thanks for your interest in contributing to [NLTK](https://www.nltk.org/).
 In this document, we'll try to summarize everything that you need to know to
 do a good job.
 
+## Maintenance Mode
+
+NLTK is in maintenance mode. We welcome bugfixes.
+We can consider _minor_ enhancements if they are clearly documented in an [NLTK issue](https://github.com/nltk/nltk/issues)
+and are supported by a [team member](https://github.com/orgs/nltk/teams/team-nltk) who is willing to review a PR.
+(You are welcome to make a case for a _major_ enhancement, but please note we have limited capacity to deal with it.
+Please enlist an NLTK team member before doing substantial coding.)
 
 ## Code and Issues
 
@@ -24,7 +31,7 @@ important are:
 - [nltk/nltk_book](https://github.com/nltk/nltk_book), source code for the NLTK
   Book.
 
-## Development priorities
+## Development priorities (old)
 
 NLTK consists of the functionality that the Python/NLP community is motivated to contribute.
 Some priority areas for development are listed in the [NLTK Wiki](https://github.com/nltk/nltk/wiki#development).
@@ -62,9 +69,7 @@ repository [nltk/nltk](https://github.com/nltk/nltk/):
 
 ### GitHub Pull requests
 
-We use the famous
-[gitflow](https://nvie.com/posts/a-successful-git-branching-model/) to manage our
-branches.
+We use [gitflow](https://nvie.com/posts/a-successful-git-branching-model/) to manage our branches.
 
 Summary of our git branching model:
 - Go to the `develop` branch (`git checkout develop`);
