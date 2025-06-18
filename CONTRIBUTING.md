@@ -30,6 +30,10 @@ git checkout -b add-my-dataset
 - Place your dataset in the appropriate directory (`corpora/`, `models/`, `tokenizers/`, etc.). If you are unsure, check the existing structure or open an issue for clarification.
 - If your dataset has a license, include the license file in the same directory. If the license is unknown or separate from the repository, please add a note in a `README` or `LICENSE` file within the dataset’s folder, and document this in your pull request.
 
+**Whenever you add a new data package, you must update [`DATASET-LICENSES.md`](DATASET-LICENSES.md) with the license information for your package.**
+
+You only need to update [`LICENSE-OVERVIEW.md`](LICENSE-OVERVIEW.md) if you are making changes to the repository’s overall licensing structure or guidance.
+
 ### 4. Update Index Files
 
 - If required, update any index or metadata files so that the new dataset is discoverable by NLTK’s downloader. Follow the format of the existing files.
