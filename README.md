@@ -17,6 +17,8 @@ For detailed instructions, please see the [NLTK website](https://www.nltk.org/).
 
 ## Recent Enhancements
 
+> **Note:** You do not need to update `index.xml` when adding or modifying packages. It is automatically rebuilt after changes are merged.
+
 ### Licensing Transparency ([PR #242](https://github.com/nltk/nltk_data/pull/242))
 - Added a top-level `LICENSE` (Apache License 2.0) for the repository.
 - Added `LICENSE-OVERVIEW.md` summarizing the licensing structure, with emphasis on the diversity of dataset licenses and the importance of reviewing individual terms.

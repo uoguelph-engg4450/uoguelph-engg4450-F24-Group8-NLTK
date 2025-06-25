@@ -36,7 +36,8 @@ You only need to update [`LICENSE-OVERVIEW.md`](LICENSE-OVERVIEW.md) if you are 
 
 ### 4. Update Index Files
 
-- If required, update any index or metadata files so that the new dataset is discoverable by NLTK’s downloader. Follow the format of the existing files.
+- You do **not** need to manually update `index.xml`. This file is now rebuilt automatically by a GitHub Actions workflow after your changes are merged.
+- Any local changes you make to `index.xml` will be ignored and overwritten by the workflow.
 - Provide a short README or metadata file describing the package, its origin, and its license.
 
 ### 5. Commit and Push Your Changes
