@@ -1,0 +1,11 @@
+<package>
+  <id>mock_corpus</id>
+  <name>Mock Corpus</name>
+  <description>This is a mock corpus for testing the index.xml automation workflow. It can be safely added and removed.</description>
+  <checksum type="md5">8136ac6c6ad5fc5f7c11211177166490</checksum>
+  <filesize>454</filesize>
+  <unzip>true</unzip>
+  <license type="free">Test-only</license>
+  <url>mock_corpus.zip</url>
+  <readme>mock_corpus_README.txt</readme>
+</package>

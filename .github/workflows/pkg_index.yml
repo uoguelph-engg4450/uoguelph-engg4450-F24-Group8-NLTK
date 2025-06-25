@@ -1,0 +1,32 @@
+name: Build and commit index.xml on package update
+
+on:
+  push:
+    branches:
+      - gh-pages
+    paths:
+      - 'packages/**'
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install make
+        run: sudo apt-get update && sudo apt-get install -y make
+
+      - name: Build index.xml
+        run: make pkg_index
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push index.xml
+        run: |
+          git add index.xml
+          git commit -m "Auto-build index.xml after package update" || echo "No changes to commit"
+          git push
