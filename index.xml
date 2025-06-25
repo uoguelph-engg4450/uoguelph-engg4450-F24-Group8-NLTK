@@ -52,7 +52,6 @@
     <package id="maxent_ne_chunker_tab" name="ACE Named Entity Chunker (Maximum entropy)" languages="English" unzip="1" unzipped_size="14621652" size="5449208" checksum="a50bea2481daf9b26e01ea0128780b20" subdir="chunkers" url="https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/chunkers/maxent_ne_chunker_tab.zip" />
     <package id="maxent_treebank_pos_tagger" name="Treebank Part of Speech Tagger (Maximum entropy)" languages="English" unzip="1" unzipped_size="17961132" size="10156853" checksum="e3b8a5353056073e164c5b06d0cc1fa7" subdir="taggers" url="https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/taggers/maxent_treebank_pos_tagger.zip" />
     <package id="maxent_treebank_pos_tagger_tab" name="Treebank Part of Speech Tagger (Maximum entropy)" languages="English" unzip="1" unzipped_size="10649197" size="3731431" checksum="c89cb1171d5026200ab2083811245a77" subdir="taggers" url="https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/taggers/maxent_treebank_pos_tagger_tab.zip" />
-    <package id="mock_corpus" name="Mock Corpus" description="This is a mock corpus for testing the index.xml automation workflow. It can be safely added and removed." unzip="1" license="Public Domain" unzipped_size="143" size="455" checksum="060cd55b69c9a2392de43777f8eb5114" subdir="corpora" url="https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/mock_corpus.zip" />
     <package id="moses_sample" name="Moses Sample Models" webpage="http://www.statmt.org/moses/?n=Moses.SampleData" unzip="1" unzipped_size="10985045" size="10961490" checksum="715531d058ec253bd0683d0df23ec868" subdir="models" url="https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/models/moses_sample.zip" />
     <package id="movie_reviews" name="Sentiment Polarity Dataset Version 2.0" author="Bo Pang and Lillian Lee" copyright="Copyright (C) 2004 Bo Pang and Lillian Lee" webpage="http://www.cs.cornell.edu/people/pabo/movie-review-data/" license="Creative Commons Attribution 4.0 International" licenseurl="http://creativecommons.org/licenses/by/4.0/" unzip="1" unzipped_size="7790571" size="4004848" checksum="155de2b77c6834dd8eea7cbe88e93acb" subdir="corpora" url="https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/movie_reviews.zip" />
     <package id="mte_teip5" name="MULTEXT-East 1984 annotated corpus 4.0" author="Erjavec, Toma&#382;; Barbu, Ana-Maria; Derzhanski, Ivan; Dimitrova, Ludmila; Garab&#237;k, Radovan; Ide, Nancy; Kaalep, Heiki-Jaan; Kotsyba, Natalia; Krstev, Cvetana; Oravecz, Csaba; Petkevi&#269;, Vladim&#237;r; Priest-Dorman, Greg; QasemiZadeh, Behrang; Radziszewski, Adam; Simov, Kiril; Tufi&#351;, Dan and Zdravkova, Katerina" license="Creative Commons - Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)" webpage="https://www.clarin.si/repository/xmlui/handle/11356/1043" unzip="1" unzipped_size="122461442" size="14800561" checksum="27aa12b3546cb241df8699506ab15128" subdir="corpora" url="https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/mte_teip5.zip" />
@@ -176,7 +175,6 @@
       <item ref="maxent_ne_chunker_tab" />
       <item ref="maxent_treebank_pos_tagger" />
       <item ref="maxent_treebank_pos_tagger_tab" />
-      <item ref="mock_corpus" />
       <item ref="moses_sample" />
       <item ref="movie_reviews" />
       <item ref="mte_teip5" />
@@ -287,7 +285,6 @@
       <item ref="mac_morpho" />
       <item ref="machado" />
       <item ref="masc_tagged" />
-      <item ref="mock_corpus" />
       <item ref="movie_reviews" />
       <item ref="mte_teip5" />
       <item ref="names" />
@@ -394,7 +391,6 @@
       <item ref="maxent_ne_chunker_tab" />
       <item ref="maxent_treebank_pos_tagger" />
       <item ref="maxent_treebank_pos_tagger_tab" />
-      <item ref="mock_corpus" />
       <item ref="moses_sample" />
       <item ref="movie_reviews" />
       <item ref="mte_teip5" />
