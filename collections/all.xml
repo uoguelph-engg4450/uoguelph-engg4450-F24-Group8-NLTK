@@ -49,6 +49,7 @@
   <item ref="maxent_ne_chunker_tab" />
   <item ref="maxent_treebank_pos_tagger" />
   <item ref="maxent_treebank_pos_tagger_tab" />
+  <item ref="mock_corpus" />
   <item ref="moses_sample" />
   <item ref="movie_reviews" />
   <item ref="mte_teip5" />
