@@ -1204,6 +1204,9 @@ class WordNetCorpusReader(CorpusReader):
                 assert int(index) == i
                 self._lexnames.append(lexname)
 
+        # Build a set of adjective satellite offsets
+        self._scan_satellites()
+
         # Load the indices for lemmas and synset offsets
         self._load_lemma_pos_offset_map()
 
@@ -1379,8 +1382,24 @@ class WordNetCorpusReader(CorpusReader):
         """return a list of languages supported by Multilingual Wordnet"""
         return list(self.provenances.keys())
 
-    def _load_lemma_pos_offset_map(self):
+    def _scan_satellites(self):
         adj_data_file = self._data_file(ADJ)
+        satellite_offsets = set()
+        adj_data_file.seek(0)
+        for line in adj_data_file:
+            if not line.strip() or line.startswith(" "):
+                continue
+            fields = line.strip().split()
+            if len(fields) < 3:
+                continue
+            synset_offset = fields[0]
+            synset_type = fields[2]
+            if synset_type == "s":
+                satellite_offsets.add(int(synset_offset))
+        adj_data_file.seek(0)  # Reset if needed elsewhere
+        self.satellite_offsets = satellite_offsets
+
+    def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
             # parse each line of the file (ignoring comment lines)
             with self.open("index.%s" % suffix) as fp:
@@ -1426,15 +1445,15 @@ class WordNetCorpusReader(CorpusReader):
                     # map lemmas and parts of speech to synsets
                     self._lemma_pos_offset_map[lemma][pos] = synset_offsets
                     if pos == ADJ:
-                        sat_offsets = []
-                        for offset in synset_offsets:
-                            adj_data_file.seek(offset)
-                            # Check in data.adj if offset pos is ADJ_SAT
-                            if adj_data_file.readline()[12:13] == ADJ_SAT:
-                                sat_offsets.append(offset)
-                        if sat_offsets:
+                        # Filter adjective satellites:
+                        satellite_offsets = [
+                            of for of in synset_offsets if of in self.satellite_offsets
+                        ]
+                        if satellite_offsets:
                             # Duplicate only real satellites
-                            self._lemma_pos_offset_map[lemma][ADJ_SAT] = sat_offsets
+                            self._lemma_pos_offset_map[lemma][
+                                ADJ_SAT
+                            ] = satellite_offsets
 
     def _load_exception_map(self):
         # load the exception file data into memory
