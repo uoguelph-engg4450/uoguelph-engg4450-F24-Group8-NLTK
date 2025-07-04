@@ -1380,6 +1380,7 @@ class WordNetCorpusReader(CorpusReader):
         return list(self.provenances.keys())
 
     def _load_lemma_pos_offset_map(self):
+        adj_data_file = self._data_file(ADJ)
         for suffix in self._FILEMAP.values():
             # parse each line of the file (ignoring comment lines)
             with self.open("index.%s" % suffix) as fp:
@@ -1425,8 +1426,15 @@ class WordNetCorpusReader(CorpusReader):
                     # map lemmas and parts of speech to synsets
                     self._lemma_pos_offset_map[lemma][pos] = synset_offsets
                     if pos == ADJ:
-                        # Duplicate all adjectives indiscriminately?:
-                        self._lemma_pos_offset_map[lemma][ADJ_SAT] = synset_offsets
+                        sat_offsets = []
+                        for offset in synset_offsets:
+                            adj_data_file.seek(offset)
+                            # Check in data.adj if offset pos is ADJ_SAT
+                            if adj_data_file.readline()[12:13] == ADJ_SAT:
+                                sat_offsets.append(offset)
+                        if sat_offsets:
+                            # Duplicate only real satellites
+                            self._lemma_pos_offset_map[lemma][ADJ_SAT] = sat_offsets
 
     def _load_exception_map(self):
         # load the exception file data into memory
