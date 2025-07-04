@@ -397,7 +397,7 @@ Walk through the noun synsets looking at their hypernyms:
     Synset('object.n.01') [Synset('physical_entity.n.01')]
 
 
-# Test for PR #3400: When specifying pos="a", both head adjectives and adjective satellites are returned.
+Issue 3399: When specifying pos="a", both head adjectives and adjective satellites are returned.
 
     >>> from nltk.corpus import wordnet as wn
     >>> # All adjective synsets (heads and satellites) for "good"
