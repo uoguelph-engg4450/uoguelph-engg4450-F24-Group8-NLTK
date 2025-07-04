@@ -156,7 +156,7 @@ Lemmas
     >>> wn.lemma_from_key(eat.key()).synset()
     Synset('feed.v.06')
     >>> wn.lemma_from_key('feebleminded%5:00:00:retarded:00')
-    Lemma('backward.s.03.feebleminded')
+    Lemma('backward.s.01.feebleminded')
     >>> for lemma in wn.synset('eat.v.03').lemmas():
     ...     print(lemma, lemma.count())
     ...
@@ -395,6 +395,29 @@ Walk through the noun synsets looking at their hypernyms:
     Synset('abstraction.n.06') [Synset('entity.n.01')]
     Synset('thing.n.12') [Synset('physical_entity.n.01')]
     Synset('object.n.01') [Synset('physical_entity.n.01')]
+
+
+# Test for PR #3400: When specifying pos="a", both head adjectives and adjective satellites are returned.
+
+    >>> from nltk.corpus import wordnet as wn
+    >>> # All adjective synsets (heads and satellites) for "good"
+    >>> syns_a = wn.synsets('good', pos='a')
+    >>> sorted(set(s.pos() for s in syns_a))
+    ['a', 's']
+    >>> # Only head adjectives
+    >>> syns_head = [s for s in syns_a if s.pos() == 'a']
+    >>> all(s.pos() == 'a' for s in syns_head)
+    True
+    >>> # Only satellites
+    >>> syns_sat = wn.synsets('good', pos='s')
+    >>> all(s.pos() == 's' for s in syns_sat)
+    True
+    >>> # The union when using pos='a' matches the combined sets
+    >>> set(syns_a) == set(syns_head) | set(syns_sat)
+    True
+    >>> # But pos='s' never returns head adjectives
+    >>> all(s.pos() != 'a' for s in wn.synsets('good', pos='s'))
+    True
 
 
 ------
@@ -648,7 +671,7 @@ Issue 3077: Incorrect part-of-speech filtering in all_synsets
     >>> next(wn.all_synsets(lang="hrv", pos="v"))
     Synset('breathe.v.01')
     >>> next(wn.all_synsets(lang="hrv", pos="s"))
-    Synset('ideological.s.02')
+    Synset('ideological.s.01')
     >>> next(wn.all_synsets(lang="hrv", pos="a"))
     Synset('able.a.01')
 
