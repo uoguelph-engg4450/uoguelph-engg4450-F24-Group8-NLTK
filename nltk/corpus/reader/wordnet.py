@@ -1383,6 +1383,13 @@ class WordNetCorpusReader(CorpusReader):
         return list(self.provenances.keys())
 
     def _scan_satellites(self):
+        """
+        Scans the adjective data file and populates self.satellite_offsets with all adjective satellite synset offsets.
+
+        This method reads the adjective data file associated with the corpus reader,
+        identifies synsets of type 's' (adjective satellites), and adds their offsets
+        to the self.satellite_offsets set. The method does not return a value.
+        """
         adj_data_file = self._data_file(ADJ)
         satellite_offsets = set()
         adj_data_file.seek(0)
@@ -1449,11 +1456,8 @@ class WordNetCorpusReader(CorpusReader):
                         satellite_offsets = [
                             of for of in synset_offsets if of in self.satellite_offsets
                         ]
-                        if satellite_offsets:
-                            # Duplicate only real satellites
-                            self._lemma_pos_offset_map[lemma][
-                                ADJ_SAT
-                            ] = satellite_offsets
+                        # Duplicate only real satellites
+                        self._lemma_pos_offset_map[lemma][ADJ_SAT] = satellite_offsets
 
     def _load_exception_map(self):
         # load the exception file data into memory
