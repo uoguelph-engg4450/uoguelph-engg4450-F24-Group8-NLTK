@@ -1327,7 +1327,7 @@ class WordNetCorpusReader(CorpusReader):
             self.add_omw()
 
         if lang not in self.langs():
-            raise WordNetError("Language is not supported.")
+            raise WordNetError(f"Language {lang} is not supported.")
 
         if self._exomw_reader and lang not in self.omw_langs:
             reader = self._exomw_reader
@@ -1452,11 +1452,14 @@ class WordNetCorpusReader(CorpusReader):
                     # map lemmas and parts of speech to synsets
                     self._lemma_pos_offset_map[lemma][pos] = synset_offsets
                     if pos == ADJ:
-                        # Filter adjective satellites:
+                        # index.adj uses only the ADJ pos, so identify ADJ_SAT using satellites set
                         satellite_offsets = [
-                            of for of in synset_offsets if of in self.satellite_offsets
+                            # Keep the ordering from index.adj
+                            offset
+                            for offset in synset_offsets
+                            if offset in self.satellite_offsets
                         ]
-                        # Duplicate only real satellites
+                        # Duplicate only a (possibly empty) list of real satellites
                         self._lemma_pos_offset_map[lemma][ADJ_SAT] = satellite_offsets
 
     def _load_exception_map(self):
