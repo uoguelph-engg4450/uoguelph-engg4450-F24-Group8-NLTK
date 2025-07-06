@@ -1204,6 +1204,9 @@ class WordNetCorpusReader(CorpusReader):
                 assert int(index) == i
                 self._lexnames.append(lexname)
 
+        # Build a set of adjective satellite offsets
+        self._scan_satellites()
+
         # Load the indices for lemmas and synset offsets
         self._load_lemma_pos_offset_map()
 
@@ -1324,7 +1327,7 @@ class WordNetCorpusReader(CorpusReader):
             self.add_omw()
 
         if lang not in self.langs():
-            raise WordNetError("Language is not supported.")
+            raise WordNetError(f"Language {lang} is not supported.")
 
         if self._exomw_reader and lang not in self.omw_langs:
             reader = self._exomw_reader
@@ -1379,6 +1382,30 @@ class WordNetCorpusReader(CorpusReader):
         """return a list of languages supported by Multilingual Wordnet"""
         return list(self.provenances.keys())
 
+    def _scan_satellites(self):
+        """
+        Scans the adjective data file and populates self.satellite_offsets with all adjective satellite synset offsets.
+
+        This method reads the adjective data file associated with the corpus reader,
+        identifies synsets of type 's' (adjective satellites), and adds their offsets
+        to the self.satellite_offsets set. The method does not return a value.
+        """
+        adj_data_file = self._data_file(ADJ)
+        satellite_offsets = set()
+        adj_data_file.seek(0)
+        for line in adj_data_file:
+            if not line.strip() or line.startswith(" "):
+                continue
+            fields = line.strip().split()
+            if len(fields) < 3:
+                continue
+            synset_offset = fields[0]
+            synset_type = fields[2]
+            if synset_type == "s":
+                satellite_offsets.add(int(synset_offset))
+        adj_data_file.seek(0)  # Reset if needed elsewhere
+        self.satellite_offsets = satellite_offsets
+
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
             # parse each line of the file (ignoring comment lines)
@@ -1425,8 +1452,15 @@ class WordNetCorpusReader(CorpusReader):
                     # map lemmas and parts of speech to synsets
                     self._lemma_pos_offset_map[lemma][pos] = synset_offsets
                     if pos == ADJ:
-                        # Duplicate all adjectives indiscriminately?:
-                        self._lemma_pos_offset_map[lemma][ADJ_SAT] = synset_offsets
+                        # index.adj uses only the ADJ pos, so identify ADJ_SAT using satellites set
+                        satellite_offsets = [
+                            # Keep the ordering from index.adj
+                            offset
+                            for offset in synset_offsets
+                            if offset in self.satellite_offsets
+                        ]
+                        # Duplicate only a (possibly empty) list of real satellites
+                        self._lemma_pos_offset_map[lemma][ADJ_SAT] = satellite_offsets
 
     def _load_exception_map(self):
         # load the exception file data into memory
