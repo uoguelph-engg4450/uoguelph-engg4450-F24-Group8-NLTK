@@ -2242,7 +2242,7 @@ def md5_hexdigest(file):
 
 
 def _md5_hexdigest(fp):
-    md5_digest = md5()
+    md5_digest = md5(usedforsecurity=False)
     while True:
         block = fp.read(1024 * 16)  # 16k blocks
         if not block:
