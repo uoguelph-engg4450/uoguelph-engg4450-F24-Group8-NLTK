@@ -231,7 +231,7 @@ class Package:
            zipfile."""
 
         self.checksum = checksum
-        """The MD-5 checksum of the package file."""
+        """The SHA-256 checksum of the package file."""
 
         self.svn_revision = svn_revision
         """A subversion revision number for this package."""
