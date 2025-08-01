@@ -169,7 +169,7 @@ import threading
 import time
 import warnings
 import zipfile
-from hashlib import md5
+from hashlib import sha256
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 from xml.etree import ElementTree
@@ -881,7 +881,7 @@ class Downloader:
             return self.STALE
 
         # Check if the file's checksum matches
-        if md5_hexdigest(filepath) != info.checksum:
+        if sha256_hexdigest(filepath) != info.checksum:
             return self.STALE
 
         # If it's a zipfile, and it's been at least partially
@@ -2230,25 +2230,25 @@ class DownloaderGUI:
 # [xx] It may make sense to move these to nltk.internals.
 
 
-def md5_hexdigest(file):
+def sha256_hexdigest(file):
     """
-    Calculate and return the MD5 checksum for a given file.
+    Calculate and return the SHA256 checksum for a given file.
     ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, str):
         with open(file, "rb") as infile:
-            return _md5_hexdigest(infile)
-    return _md5_hexdigest(file)
+            return _sha256_hexdigest(infile)
+    return _sha256_hexdigest(file)
 
 
-def _md5_hexdigest(fp):
-    md5_digest = md5(usedforsecurity=False)
+def _sha256_hexdigest(fp):
+    sha256_digest = sha256(usedforsecurity=False)
     while True:
         block = fp.read(1024 * 16)  # 16k blocks
         if not block:
             break
-        md5_digest.update(block)
-    return md5_digest.hexdigest()
+        sha256_digest.update(block)
+    return sha256_digest.hexdigest()
 
 
 # change this to periodically yield progress messages?
@@ -2330,7 +2330,7 @@ def build_index(root, base_url):
         # Fill in several fields of the package xml with calculated values.
         pkg_xml.set("unzipped_size", "%s" % unzipped_size)
         pkg_xml.set("size", "%s" % zipstat.st_size)
-        pkg_xml.set("checksum", "%s" % md5_hexdigest(zf.filename))
+        pkg_xml.set("checksum", "%s" % sha256_hexdigest(zf.filename))
         pkg_xml.set("subdir", subdir)
         # pkg_xml.set('svn_revision', _svn_revision(zf.filename))
         if not pkg_xml.get("url"):
