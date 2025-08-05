@@ -1,3 +1,4 @@
+import os
 import unittest.mock
 
 from nltk import download
@@ -32,7 +33,8 @@ def test_downloader_redownload(tmp_path):
             assert download_status is True
             if i == 0:
                 expected_second_call = unittest.mock.call(
-                    "[nltk_data]   Unzipping corpora/stopwords.zip."
+                    "[nltk_data]   Unzipping %s."
+                    % os.path.join("corpora", "stopwords.zip")
                 )
                 assert print_mock.call_args_list[1].args == expected_second_call.args
             elif i == 1:

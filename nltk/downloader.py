@@ -2242,7 +2242,7 @@ def md5_hexdigest(file):
 
 
 def _md5_hexdigest(fp):
-    md5_digest = md5(usedforsecurity=False)
+    md5_digest = md5()
     while True:
         block = fp.read(1024 * 16)  # 16k blocks
         if not block:
@@ -2263,7 +2263,7 @@ def sha256_hexdigest(file):
 
 
 def _sha256_hexdigest(fp):
-    sha256_digest = sha256(usedforsecurity=False)
+    sha256_digest = sha256()
     while True:
         block = fp.read(1024 * 16)  # 16k blocks
         if not block:
