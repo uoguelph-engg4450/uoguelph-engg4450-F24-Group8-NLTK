@@ -2232,7 +2232,7 @@ class DownloaderGUI:
 
 def md5_hexdigest(file):
     """
-    Calculate and return the MD-5 checksum for a given file.
+    Calculate and return the MD5 checksum for a given file.
     ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, str):
