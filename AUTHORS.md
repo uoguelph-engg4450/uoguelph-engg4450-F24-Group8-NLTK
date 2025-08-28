@@ -309,6 +309,7 @@
 - Peter de Blanc <https://github.com/pdeblanc>
 - Jose Cols <https://github.com/josecols>
 - Christopher Smith <https://github.com/smithct2>
+- Ryan Mannion <https://github.com/ryanamannion>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
