@@ -304,6 +304,7 @@
 - Ron Urbach <https://github.com/sharpblade4>
 - Vivek Kalyan <https://github.com/vivekkalyan>
 - Tom Strange https://github.com/strangetom
+- Vincent Peth <https://github.com/ShadokDuBas>
 - Samer Masterson <https://github.com/samertm>
 - William LaCroix <https://github.com/WilliamPLaCroix>
 - Peter de Blanc <https://github.com/pdeblanc>
