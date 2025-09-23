@@ -88,7 +88,8 @@ jobs:
       - run: |
           pip install --upgrade pip
           pip install --upgrade nltk
-          python -c "import nltk; nltk.download('wordnet'); from nltk.corpus import wordnet; assert wordnet.synsets('dog'), 'Wordnet download failed or unusable'"
+          python -c "import nltk; nltk.download('wordnet')"
+          python -c "from nltk.corpus import wordnet; assert wordnet.synsets('dog'), 'Wordnet download failed or unusable'"
 
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
