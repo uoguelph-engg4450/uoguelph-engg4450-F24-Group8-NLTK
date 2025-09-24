@@ -6,7 +6,7 @@ on:
       - 'v*.*.*'
 
 jobs:
-  build-and-release:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -14,26 +14,37 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: pytest
 
+  build-and-release:
+    runs-on: ubuntu-latest
+    needs: test
+    strategy:
+      matrix:
+        python-version: [3.12]  # Only build for this version
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install build
-
-      - name: Run tests
-        run: |
-          pytest
-
       - name: Build distributions
-        run: |
-          python -m build
-
+        run: python -m build
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         with:
@@ -42,4 +53,3 @@ jobs:
             dist/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: matrix.python-version == '3.12'
