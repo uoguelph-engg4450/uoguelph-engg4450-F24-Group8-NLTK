@@ -75,9 +75,25 @@ jobs:
           ./tools/github_actions/third-party.sh
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
+  minimal_download_test:
+    name: Minimal NLTK Download Test
+    runs-on: ubuntu-latest
+    env:
+      NLTK_DATA: /tmp/nltk_data
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: |
+          pip install --upgrade pip
+          pip install --upgrade nltk
+          python -c "import nltk; nltk.download('wordnet')"
+          python -c "from nltk.corpus import wordnet; assert wordnet.synsets('dog'), 'Wordnet download failed or unusable'"
+
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
-    needs: [cache_nltk_data, cache_third_party]
+    needs: [minimal_download_test, cache_nltk_data, cache_third_party]
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
