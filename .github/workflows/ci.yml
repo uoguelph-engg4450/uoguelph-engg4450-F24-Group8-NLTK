@@ -48,14 +48,14 @@ jobs:
       - name: Install NLTK and dependencies
         run: pip install --upgrade pip && pip install --upgrade nltk
 
-      - name: Print NLTK_DATA in shell
-        shell: bash
-        run: |
-          echo "NLTK_DATA in shell: $NLTK_DATA"
-
       - name: Set NLTK_DATA environment variable
         shell: bash
         run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> $GITHUB_ENV
+
+      - name: Show NLTK_DATA in shell
+        shell: bash
+        run: |
+          echo "NLTK_DATA in shell: $NLTK_DATA"
 
       - name: Ensure minimal NLTK data for cache
         shell: bash
@@ -101,6 +101,7 @@ jobs:
           python -c "import os; print('Python sees GITHUB_WORKSPACE:', os.environ.get('GITHUB_WORKSPACE')); print('Python sees NLTK_DATA:', os.environ.get('NLTK_DATA'))"
 
       - name: List contents of NLTK data dir
+        shell: bash
         run: ls -lR "${{ github.workspace }}/nltk_data" || echo "nltk_data not found"
 
       - name: Cache nltk data
@@ -128,20 +129,25 @@ jobs:
           key: third_${{ runner.os }}_${{ hashFiles('tools/github_actions/third-party.sh') }}_v1
 
       - name: List contents of third-party dir before download
+        shell: bash
         run: ls -lR "${{ env.THIRD_PARTY_DIR }}" || echo "third-party dir not found"
 
       - name: Download third party data on cache miss
         if: steps.third-party-cache.outputs.cache-hit != 'true'
+        shell: bash
         run: |
           chmod +x ./tools/github_actions/third-party.sh
           ./tools/github_actions/third-party.sh
 
       - name: List contents of third-party dir after download/cache
+        shell: bash
         run: ls -lR "${{ env.THIRD_PARTY_DIR }}" || echo "third-party dir not found"
 
       - name: Print NLTK data search paths
+        shell: bash
         run: python -c "import nltk; print('NLTK data search paths:', nltk.data.path)"
 
       - name: Run pytest
+        shell: bash
         run: |
           pytest --numprocesses auto -rsx --doctest-modules nltk
