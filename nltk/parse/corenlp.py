@@ -138,27 +138,33 @@ class CoreNLPServer:
                 "The error was: {}".format(stderrdata.decode("ascii")),
             )
 
-        for i in range(30):
-            try:
-                response = requests.get(requests.compat.urljoin(self.url, "live"))
-            except requests.exceptions.ConnectionError:
-                time.sleep(1)
-            else:
-                if response.ok:
-                    break
-        else:
-            raise CoreNLPServerError("Could not connect to the server.")
+        try:
 
-        for i in range(60):
-            try:
-                response = requests.get(requests.compat.urljoin(self.url, "ready"))
-            except requests.exceptions.ConnectionError:
-                time.sleep(1)
+            for i in range(30):
+                try:
+                    response = requests.get(requests.compat.urljoin(self.url, "live"))
+                except requests.exceptions.ConnectionError:
+                    time.sleep(1)
+                else:
+                    if response.ok:
+                        break
             else:
-                if response.ok:
-                    break
-        else:
-            raise CoreNLPServerError("The server is not ready.")
+                raise CoreNLPServerError("Could not connect to the server.")
+
+            for i in range(60):
+                try:
+                    response = requests.get(requests.compat.urljoin(self.url, "ready"))
+                except requests.exceptions.ConnectionError:
+                    time.sleep(1)
+                else:
+                    if response.ok:
+                        break
+            else:
+                raise CoreNLPServerError("The server is not ready.")
+
+        except Exception:
+            self.popen.terminate()
+            raise
 
     def stop(self):
         self.popen.terminate()
