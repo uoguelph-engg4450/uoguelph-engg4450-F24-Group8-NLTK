@@ -1,4 +1,4 @@
-Version 3.9.2 2025-09-10
+Version 3.9.2 2025-10-01
 
 * Update download checksums to use SHA256 in built index
 * Fix percentage escape in new-style string formatting
