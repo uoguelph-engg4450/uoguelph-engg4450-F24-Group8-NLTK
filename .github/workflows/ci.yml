@@ -45,9 +45,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install NLTK and dependencies
-        run: pip install --upgrade pip && pip install --upgrade nltk
-
       - name: Set NLTK_DATA environment variable
         shell: bash
         run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> $GITHUB_ENV
