@@ -760,15 +760,16 @@ class Tree(list):
 
         draw_trees(self)
 
-    def pretty_print(self, sentence=None, highlight=(), stream=None, **kwargs):
+    def pretty_print(self, sentence=None, highlight=(), stream=None, rtl=False, **kwargs):
         """
         Pretty-print this tree as ASCII or Unicode art.
+        rtl: if True, displays the tree in right-to-left orientation
         For explanation of the arguments, see the documentation for
         `nltk.tree.prettyprinter.TreePrettyPrinter`.
         """
         from nltk.tree.prettyprinter import TreePrettyPrinter
-
-        print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs), file=stream)
+        printer = TreePrettyPrinter(self, sentence, highlight, rtl=rtl)
+        print(printer.text(**kwargs), file=stream)
 
     def __repr__(self):
         childstr = ", ".join(repr(c) for c in self)

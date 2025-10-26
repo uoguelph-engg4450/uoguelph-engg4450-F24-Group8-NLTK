@@ -70,7 +70,11 @@ class TreePrettyPrinter:
     Mary     walks
     """
 
-    def __init__(self, tree, sentence=None, highlight=()):
+    def __init__(self, tree, sentence=None, highlight=(), stream=None, rtl=False):
+        self.tree = tree
+        self.sentence = sentence
+        self.highlight = highlight
+        self.rtl = rtl
         if sentence is None:
             leaves = tree.leaves()
             if (
@@ -96,7 +100,7 @@ class TreePrettyPrinter:
                                     b = "/".join(b)
                                 sentence.append("%s" % b)
         self.nodes, self.coords, self.edges, self.highlight = self.nodecoords(
-            tree, sentence, highlight
+            tree, sentence, highlight, rtl=self.rtl
         )
 
     def __str__(self):
@@ -106,7 +110,7 @@ class TreePrettyPrinter:
         return "<TreePrettyPrinter with %d nodes>" % len(self.nodes)
 
     @staticmethod
-    def nodecoords(tree, sentence, highlight):
+    def nodecoords(tree, sentence, highlight, rtl=False):
         """
         Produce coordinates of nodes on a grid.
 
@@ -139,6 +143,8 @@ class TreePrettyPrinter:
         - coords[id]: (n, m) coordinate where to draw node with id in the grid
         - edges[id]: parent id of node with this id (ordered dictionary)
         - highlighted: set of ids that should be highlighted
+
+        rtl: if True, flips the tree horizontally for right-to-left languages
         """
 
         def findcell(m, matrix, startoflevel, children):
@@ -244,6 +250,9 @@ class TreePrettyPrinter:
 
         for m in terminals:
             i = int(tree[m]) * scale
+            if rtl:
+                max_column = len(matrix[0]) - 1
+                i = max_column - i
             assert matrix[0][i] is None, (matrix[0][i], m, i)
             matrix[0][i] = ids[m]
             nodes[ids[m]] = sentence[tree[m]]
@@ -258,6 +267,8 @@ class TreePrettyPrinter:
         # to the left and right alternately, until an empty cell is found.
         for n in sorted(levels, reverse=True):
             nodesatdepth = levels[n]
+            if rtl:
+                nodesatdepth = list(reversed(nodesatdepth))
             startoflevel = len(matrix)
             matrix.append(
                 [vertline if a not in (corner, None) else None for a in matrix[-1]]
@@ -339,6 +350,7 @@ class TreePrettyPrinter:
         funccolor="green",
         abbreviate=None,
         maxwidth=16,
+        rtl=False,
     ):
         """
         :return: ASCII art for a discontinuous tree.
@@ -408,6 +420,8 @@ class TreePrettyPrinter:
             if maxwidth and len(label) > maxwidth:
                 label = wrapre.sub(r"\1\n", label).strip()
             label = label.split("\n")
+            if rtl:
+                label = [s[::-1] for s in label]
             maxnodeheight[row] = max(maxnodeheight[row], len(label))
             maxnodewith[column] = max(maxnodewith[column], max(map(len, label)))
             labels[a] = label
@@ -424,7 +438,12 @@ class TreePrettyPrinter:
                 for _ in range(maxnodeheight[row])
             ]
             branchrow = ["".center(maxnodewith[col]) for col in range(maxcol + 1)]
+            if rtl:
+                col_map = {col: maxcol - col for col in range(maxcol + 1)}
+            else:
+                col_map = {col: col for col in range(maxcol + 1)}
             for col in matrix[row]:
+                display_col = col_map[col]
                 n = matrix[row][col]
                 node = self.nodes[n]
                 text = labels[n]
@@ -432,26 +451,28 @@ class TreePrettyPrinter:
                     # draw horizontal branch towards children for this node
                     if n in minchildcol and minchildcol[n] < maxchildcol[n]:
                         i, j = minchildcol[n], maxchildcol[n]
+                        i_disp, j_disp = col_map[i], col_map[j]
                         a, b = (maxnodewith[i] + 1) // 2 - 1, maxnodewith[j] // 2
-                        branchrow[i] = ((" " * a) + leftcorner).ljust(
-                            maxnodewith[i], horzline
-                        )
-                        branchrow[j] = (rightcorner + (" " * b)).rjust(
-                            maxnodewith[j], horzline
-                        )
-                        for i in range(minchildcol[n] + 1, maxchildcol[n]):
-                            if i == col and any(a == i for _, a in childcols[n]):
+                        if rtl:
+                            branchrow[i_disp] = ((" " * a) + rightcorner).rjust(maxnodewith[i], horzline)
+                            branchrow[j_disp] = (leftcorner + (" " * b)).ljust(maxnodewith[j], horzline)
+                        else:
+                            branchrow[i_disp] = ((" " * a) + leftcorner).ljust(maxnodewith[i], horzline)
+                            branchrow[j_disp] = (rightcorner + (" " * b)).rjust(maxnodewith[j], horzline)
+                        for k in range(minchildcol[n] + 1, maxchildcol[n]):
+                            k_disp = col_map[k]
+                            if k == col and any(a == k for _, a in childcols[n]):
                                 line = cross
-                            elif i == col:
+                            elif k == col:
                                 line = bottom
-                            elif any(a == i for _, a in childcols[n]):
+                            elif any(a == k for _, a in childcols[n]):
                                 line = tee
                             else:
                                 line = horzline
-                            branchrow[i] = line.center(maxnodewith[i], horzline)
+                            branchrow[k_disp] = line.center(maxnodewith[k_disp], horzline)
                     else:  # if n and n in minchildcol:
-                        branchrow[col] = crosscell(branchrow[col])
-                text = [a.center(maxnodewith[col]) for a in text]
+                        branchrow[display_col] = crosscell(branchrow[display_col])
+                text = [a.center(maxnodewith[col_map.get(col, col)]) for a in text]
                 color = nodecolor if isinstance(node, Tree) else leafcolor
                 if isinstance(node, Tree) and node.label().startswith("-"):
                     color = funccolor
@@ -464,7 +485,7 @@ class TreePrettyPrinter:
                 for x in range(maxnodeheight[row]):
                     # draw vertical lines in partially filled multiline node
                     # labels, but only if it's not a frontier node.
-                    noderows[x][col] = (
+                    noderows[x][display_col] = (
                         text[x]
                         if x < len(text)
                         else (vertline if childcols[n] else " ").center(
@@ -475,11 +496,12 @@ class TreePrettyPrinter:
             # above us, draw a vertical branch in that column.
             if row != max(matrix):
                 for n, (childrow, col) in self.coords.items():
+                    display_col = col_map[col]
                     if n > 0 and self.coords[self.edges[n]][0] < row < childrow:
-                        branchrow[col] = crosscell(branchrow[col])
+                        branchrow[display_col] = crosscell(branchrow[display_col])
                         if col not in matrix[row]:
                             for noderow in noderows:
-                                noderow[col] = crosscell(noderow[col])
+                                noderow[display_col] = crosscell(noderow[display_col])
                 branchrow = [
                     a + ((a[-1] if a[-1] != " " else b[0]) * nodedist)
                     for a, b in zip(branchrow, branchrow[1:] + [" "])
@@ -500,6 +522,7 @@ class TreePrettyPrinter:
         hstart = vstart = 20
         width = max(col for _, col in self.coords.values())
         height = max(row for row, _ in self.coords.values())
+        rtl = getattr(self, "rtl", False)
         result = [
             '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" '
             'width="%dem" height="%dem" viewBox="%d %d %d %d">'
@@ -525,9 +548,14 @@ class TreePrettyPrinter:
             y, x = self.coords[node]
             x *= hscale
             y *= vscale
+            if rtl:
+                x = width * hscale
+                childx = [width - self.coords[c][1] for c in children[node]]
             x += hstart
             y += vstart + fontsize // 2
             childx = [self.coords[c][1] for c in children[node]]
+            if rtl:
+                childx = [width - cx for cx in childx]
             xmin = hstart + hscale * min(childx)
             xmax = hstart + hscale * max(childx)
             result.append(
@@ -547,7 +575,10 @@ class TreePrettyPrinter:
             childy, childx = self.coords[child]
             childx *= hscale
             childy *= vscale
-            childx += hstart
+            if rtl:
+                childx = (width - self.coords[child][1]) * hscale + hstart
+            else:
+                childx += hstart
             childy += vstart - fontsize
             result += [
                 '\t<polyline style="stroke:white; stroke-width:10; fill:none;"'
@@ -559,7 +590,10 @@ class TreePrettyPrinter:
         # write nodes with coordinates
         for n, (row, column) in self.coords.items():
             node = self.nodes[n]
-            x = column * hscale + hstart
+            if rtl:
+                x = (width - column) * hscale + hstart
+            else:
+                x = column * hscale + hstart
             y = row * vscale + vstart
             if n in self.highlight:
                 color = nodecolor if isinstance(node, Tree) else leafcolor
@@ -619,6 +653,8 @@ def test():
         " zwemmen of terrassen .".split()
     )
     print_tree("Discontinuous tree", tree, sentence, nodedist=2)
+    print("RTL ASCII version:")
+    print(drawtree.text(nodedist=2, rtl=True))
 
 
 __all__ = ["TreePrettyPrinter"]
