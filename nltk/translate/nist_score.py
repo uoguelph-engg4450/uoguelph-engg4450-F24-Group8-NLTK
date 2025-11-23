@@ -8,11 +8,54 @@
 
 """NIST score implementation."""
 
+import warnings
 import fractions
 import math
 from collections import Counter
 
 from nltk.util import ngrams
+
+def _validate_nist_inputs(references, hypothesis, n):
+    """
+    Validate inputs for NIST score computation.
+
+    :param references: list of reference sentences, each a list of tokens
+    :param hypothesis: list of tokens for the candidate sentence
+    :param n: n-gram order requested by the caller
+    :return: possibly adjusted n (if capped to len(hypothesis))
+    :raises TypeError: if n is not an integer
+    :raises ValueError: if n < 1 or inputs are empty/invalid
+    """
+    # Ensure n is integer
+    if not isinstance(n, int):
+        raise TypeError("n must be an integer")
+
+    # FR2: if n < 1, raise a clear error
+    if n < 1:
+        raise ValueError("n must be >= 1")
+
+    # Hypothesis must be a non-empty sequence of tokens
+    if not hypothesis:
+        raise ValueError("hypothesis must be a non-empty sequence of tokens")
+
+    # References must be a non-empty list of non-empty sentences
+    if not references:
+        raise ValueError("references must be a non-empty list of reference sentences")
+
+    if any(not ref for ref in references):
+        raise ValueError("references must not contain empty sentences")
+
+    # FR3: if n > len(hypothesis), cap and warn
+    max_n = len(hypothesis)
+    if n > max_n:
+        warnings.warn(
+            f"n={n} is greater than hypothesis length {max_n}; "
+            f"capping n to {max_n}",
+            UserWarning,
+        )
+        n = max_n
+
+    return n
 
 
 def sentence_nist(references, hypothesis, n=5):
@@ -67,6 +110,9 @@ def sentence_nist(references, hypothesis, n=5):
     :param n: highest n-gram order
     :type n: int
     """
+
+    n = _validate_nist_inputs(references, hypothesis, n)
+
     return corpus_nist([references], [hypothesis], n)
 
 
@@ -82,6 +128,35 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     :param n: highest n-gram order
     :type n: int
     """
+
+    # NEW: filter out invalid sentence pairs gracefully
+    valid_refs = []
+    valid_hyps = []
+
+    for refs, hyp in zip(list_of_references, hypotheses):
+        try:
+            _validate_nist_inputs(refs, hyp, n)
+        except (TypeError, ValueError) as exc:
+            warnings.warn(
+                f"Skipping sentence pair due to invalid inputs: {exc}",
+                UserWarning,
+            )
+            continue
+        valid_refs.append(refs)
+        valid_hyps.append(hyp)
+
+    # If nothing valid remains, return a neutral score.
+    if not valid_refs:
+        warnings.warn(
+            "No valid sentence pairs to score; returning 0.0",
+            UserWarning,
+        )
+        return 0.0
+
+    # Replace original lists with filtered lists for the rest of computation.
+    list_of_references = valid_refs
+    hypotheses = valid_hyps
+
     # Before proceeding to compute NIST, perform sanity checks.
     assert len(list_of_references) == len(
         hypotheses
